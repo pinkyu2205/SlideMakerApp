@@ -1,0 +1,156 @@
+.header {
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logo-icon {
+  height: 2rem;
+  width: 2rem;
+  color: #06b6d4;
+}
+
+.logo-text {
+  margin-left: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Desktop Navigation */
+.nav-desktop {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .nav-desktop {
+    display: flex;
+  }
+}
+
+.nav-link {
+  color: #374151;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #06b6d4;
+}
+
+.nav-link.active {
+  color: #06b6d4;
+}
+
+.btn-register {
+  background-color: #06b6d4;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+  background-color: #0891b2;
+  transform: translateY(-1px);
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+  display: block;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .menu-toggle {
+    display: none;
+  }
+}
+
+.menu-icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  color: #1f2937;
+}
+
+/* Mobile Navigation */
+.nav-mobile {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .nav-mobile {
+    display: none;
+  }
+}
+
+.nav-mobile-link {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  color: #374151;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  text-decoration: none;
+  display: block;
+}
+
+.nav-mobile-link:hover {
+  background-color: #ecfeff;
+}
+
+.nav-mobile-link-register {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  background-color: #06b6d4;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.nav-mobile-link-register:hover {
+  background-color: #0891b2;
+}
