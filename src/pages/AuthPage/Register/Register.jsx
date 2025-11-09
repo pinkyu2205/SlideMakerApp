@@ -1,6 +1,7 @@
 import { Users } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { register } from '../../../services/api'
 import './Register.css'
 
 const Register = () => {
@@ -49,7 +50,7 @@ const Register = () => {
             <p className='register-subtitle'>Tạo tài khoản mới để bắt đầu</p>
           </div>
 
-          <div className='register-form' onSubmit={handleRegister}>
+          <form className='register-form' onSubmit={handleRegister}>
             <div className='form-group'>
               <label className='form-label'>Tên người dùng</label>
               <input
@@ -126,7 +127,7 @@ const Register = () => {
             <button type='submit' className='register-button'>
               Đăng ký
             </button>
-          </div>
+          </form>
 
           <div className='register-footer'>
             <p className='footer-text'>
