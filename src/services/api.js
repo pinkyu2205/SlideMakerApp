@@ -7,6 +7,20 @@ const apiClient = axios.create({
   },
 })
 
+// Thêm interceptor để đính kèm token vào mỗi request nếu có
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
 export const login = (credentials) => {
   return apiClient.post('/Auth/login', credentials)
 }
@@ -36,4 +50,13 @@ export const getCurriculum = (gradeName, className) => {
   )
 }
 
+// Hàm lấy tất cả templates
+export const getAllTemplates = (onlyActive = true) => {
+  return apiClient.get(`/Template?onlyActive=${onlyActive}`)
+}
+
+// Hàm lấy chi tiết một template
+export const getTemplateById = (id) => {
+  return apiClient.get(`/Template/${id}`)
+}
 export default apiClient

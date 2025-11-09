@@ -6,10 +6,12 @@ import Login from './pages/AuthPage/Login/Login'
 import Register from './pages/AuthPage/Register/Register'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
 import HomePage from './pages/HomePage/HomePage'
+import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
 
 export default function App() {
   const location = useLocation()
   const currentPage = location.pathname
+  const showFooter = currentPage === '/'
 
   return (
     <div className='app-container'>
@@ -20,9 +22,10 @@ export default function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/dashboard' element={<DashboardPage />} />
+          <Route path='/templates' element={<TemplateLibraryPage />} />
         </Routes>
       </main>
-      {currentPage === '/' && <Footer />}
+      {showFooter && <Footer />}
     </div>
   )
 }
