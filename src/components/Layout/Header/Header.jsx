@@ -24,6 +24,14 @@ const Header = ({ currentPage }) => {
             >
               Trang chủ
             </Link>
+            <Link
+              to='/templates'
+              className={`nav-link ${
+                currentPage === '/templates' ? 'active' : ''
+              }`}
+            >
+              Thư viện Template
+            </Link>
             <button className='nav-link'>Về chúng tôi</button>
             <button className='nav-link'>Hướng dẫn</button>
             <Link to='/login' className='nav-link'>
@@ -59,6 +67,14 @@ const Header = ({ currentPage }) => {
               className='nav-mobile-link'
             >
               Trang chủ
+            </Link>
+            {/* THÊM LINK MỚI */}
+            <Link
+              to='/templates'
+              onClick={() => setIsMenuOpen(false)}
+              className='nav-mobile-link'
+            >
+              Thư viện Template
             </Link>
             <button className='nav-mobile-link'>Về chúng tôi</button>
             <button className='nav-mobile-link'>Hướng dẫn</button>
