@@ -1,0 +1,98 @@
+.dashboard-container {
+  max-width: 1280px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-radius: 1rem;
+}
+
+.dashboard-title {
+  text-align: center;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.filters-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.filter-group select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  min-width: 200px;
+  font-size: 1rem;
+}
+
+.preview-section {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background-color: white;
+}
+
+.preview-title {
+  color: #111827;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.preview-card {
+    line-height: 1.6;
+}
+.preview-card h3 {
+    font-size: 1.5rem;
+    color: #06b6d4;
+    margin-bottom: 1rem;
+}
+.preview-card p {
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+.preview-subsection {
+    margin-top: 1rem;
+}
+.preview-subsection h4 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.formula {
+    background-color: #f3f4f6;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', Courier, monospace;
+}
+.create-slide-btn {
+    display: block;
+    margin: 2rem auto 0;
+    padding: 0.75rem 2rem;
+    background-color: #06b6d4;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.create-slide-btn:hover {
+    background-color: #0891b2;
+}

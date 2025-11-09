@@ -1,21 +1,43 @@
 import { BookOpen } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { login } from '../../../services/api' // Import hàm login
 import './Login.css'
 
 const Login = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
     remember: false,
   })
+  const [error, setError] = useState('')
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    console.log('Login:', formData)
-    // TODO: Implement login logic
-    // navigate('/dashboard'); // Sau khi đăng nhập thành công
+    setError('')
+    try {
+      const response = await login({
+        username: formData.username,
+        password: formData.password,
+      })
+      console.log('Login successful:', response.data)
+      // Lưu token vào localStorage hoặc context
+      localStorage.setItem('authToken', response.data.token)
+      localStorage.setItem('user', JSON.stringify(response.data.user))
+      navigate('/dashboard') // Chuyển đến trang dashboard sau khi đăng nhập
+    } catch (err) {
+      // Cập nhật xử lý lỗi để hiển thị Network Error
+      let errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại.'
+      if (err.code === 'ERR_NETWORK') {
+        errorMessage = 'Lỗi mạng hoặc không thể kết nối đến máy chủ.'
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message
+      }
+
+      setError(errorMessage)
+      console.error('Login error:', err)
+    }
   }
 
   return (
@@ -34,15 +56,15 @@ const Login = () => {
 
           <div className='login-form'>
             <div className='form-group'>
-              <label className='form-label'>Email</label>
+              <label className='form-label'>Tên đăng nhập</label>
               <input
-                type='email'
-                value={formData.email}
+                type='text'
+                value={formData.username}
                 onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
+                  setFormData({ ...formData, username: e.target.value })
                 }
                 className='form-input'
-                placeholder='example@email.com'
+                placeholder='Nhập tên đăng nhập'
               />
             </div>
 
@@ -58,6 +80,9 @@ const Login = () => {
                 placeholder='••••••••'
               />
             </div>
+            {error && (
+              <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
+            )}
 
             <div className='form-options'>
               <label className='checkbox-label'>

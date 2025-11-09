@@ -12,16 +12,27 @@ const Register = () => {
     confirmPassword: '',
     role: 'Teacher',
   })
+  const [error, setError] = useState('')
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault()
+    setError('')
     if (formData.password !== formData.confirmPassword) {
-      alert('Mật khẩu không khớp!')
+      setError('Mật khẩu không khớp!')
       return
     }
-    console.log('Register:', formData)
-    // TODO: Implement register logic
-    // navigate('/login'); // Chuyển đến trang đăng nhập sau khi đăng ký thành công
+
+    try {
+      const response = await register(formData)
+      console.log('Register successful:', response.data)
+      alert('Đăng ký thành công!')
+      navigate('/login') // Chuyển đến trang đăng nhập sau khi đăng ký thành công
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.'
+      setError(errorMessage)
+      console.error('Register error:', err)
+    }
   }
 
   return (
@@ -38,7 +49,7 @@ const Register = () => {
             <p className='register-subtitle'>Tạo tài khoản mới để bắt đầu</p>
           </div>
 
-          <div className='register-form'>
+          <div className='register-form' onSubmit={handleRegister}>
             <div className='form-group'>
               <label className='form-label'>Tên người dùng</label>
               <input
@@ -104,8 +115,15 @@ const Register = () => {
                 placeholder='••••••••'
               />
             </div>
-
-            <button onClick={handleRegister} className='register-button'>
+            {error && (
+              <p
+                className='error-message'
+                style={{ color: 'red', textAlign: 'center' }}
+              >
+                {error}
+              </p>
+            )}
+            <button type='submit' className='register-button'>
               Đăng ký
             </button>
           </div>
