@@ -25,6 +25,12 @@ const Header = ({ currentPage }) => {
               Trang chủ
             </Link>
             <Link
+              to='/options-template'
+              className={`nav-link ${currentPage === '/options-template' ? 'active' : ''}`}
+            >
+              Chọn Template
+            </Link>
+            <Link
               to='/templates'
               className={`nav-link ${
                 currentPage === '/templates' ? 'active' : ''

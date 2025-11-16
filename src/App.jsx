@@ -7,6 +7,7 @@ import Register from './pages/AuthPage/Register/Register'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
 import HomePage from './pages/HomePage/HomePage'
 import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
+import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
 
 export default function App() {
   const location = useLocation()
@@ -23,6 +24,7 @@ export default function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/dashboard' element={<DashboardPage />} />
           <Route path='/templates' element={<TemplateLibraryPage />} />
+          <Route path='/options-template' element={<OptionsTemplatePage />} />
         </Routes>
       </main>
       {showFooter && <Footer />}
