@@ -7,7 +7,7 @@ import './Login.css'
 const Login = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
     remember: false,
   })
@@ -18,7 +18,7 @@ const Login = () => {
     setError('')
     try {
       const response = await login({
-        username: formData.username,
+        email: formData.email,
         password: formData.password,
       })
       console.log('Login successful:', response.data)
@@ -59,9 +59,9 @@ const Login = () => {
               <label className='form-label'>Tên đăng nhập</label>
               <input
                 type='text'
-                value={formData.username}
+                value={formData.email}
                 onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
+                  setFormData({ ...formData, email: e.target.value })
                 }
                 className='form-input'
                 placeholder='Nhập tên đăng nhập'
