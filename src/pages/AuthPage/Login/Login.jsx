@@ -17,14 +17,42 @@ const Login = () => {
     e.preventDefault()
     setError('')
     try {
-      const response = await login({
+      // Cố gắng login với email hoặc username
+      const loginPayload = {
         email: formData.email,
         password: formData.password,
-      })
-      console.log('Login successful:', response.data)
-      // Lưu token vào localStorage hoặc context
-      localStorage.setItem('authToken', response.data.token)
-      localStorage.setItem('user', JSON.stringify(response.data.user))
+      }
+      
+      console.log('📤 Sending login request:', loginPayload)
+      
+      const response = await login(loginPayload)
+      
+      console.log('📥 Login response full:', response.data)
+      console.log('📥 Response keys:', Object.keys(response.data))
+      console.log('🔍 Token:', response.data.token || response.data.accessToken)
+      console.log('🔍 User:', response.data.user || response.data.data)
+      
+      // Lấy token (có thể là token hoặc accessToken)
+      const token = response.data.token || response.data.accessToken
+      if (token) {
+        localStorage.setItem('authToken', token)
+        console.log('✅ Token saved:', token)
+      } else {
+        console.warn('⚠️ No token in response')
+      }
+      
+      // Lấy user info (có thể là user, data, hoặc trong response.data trực tiếp)
+      let userData = response.data.user || response.data.data
+      
+      // Nếu không có user/data, dùng toàn bộ response.data
+      if (!userData) {
+        userData = response.data
+      }
+      
+      console.log('🔍 User data to save:', userData)
+      localStorage.setItem('user', JSON.stringify(userData))
+      console.log('✅ User saved:', userData)
+      
       navigate('/dashboard') // Chuyển đến trang dashboard sau khi đăng nhập
     } catch (err) {
       // Cập nhật xử lý lỗi để hiển thị Network Error

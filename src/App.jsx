@@ -12,6 +12,8 @@ import DashboardPage from './pages/DashboardPage/DashboardPage'
 import HomePage from './pages/HomePage/HomePage'
 import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
 import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
+import ImportPage from './pages/ImportPage/ImportPage'
+
 export default function App() {
   const location = useLocation()
   const currentPage = location.pathname
@@ -28,8 +30,8 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/templates" element={<TemplateLibraryPage />} />
-          <Route path="/options-template" element={<OptionsTemplatePage />} />
-          <Route path="/slide-generator" element={<SlideGeneratorPage />} />
+          <Route path="/curriculum" element={<OptionsTemplatePage />} />
+          <Route path="/import" element={<ImportPage />} />
         </Routes>
 
         <Routes element={<AdminRoute />}>
