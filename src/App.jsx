@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage/HomePage'
 import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
 import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
 
+<<<<<<< HEAD
 // Import các trang Admin
 import AdminRoute from './components/Auth/AdminRoute'
 import AdminDashboardPage from './pages/Admin/AdminDashboardPage'
@@ -16,6 +17,11 @@ import AdminLayout from './pages/Admin/AdminLayout'
 import CurriculumManagementPage from './pages/Admin/CurriculumManagementPage'
 import TemplateAdminPage from './pages/Admin/TemplateAdminPage'
 import UserManagementPage from './pages/Admin/UserManagementPage'
+=======
+import ForgotPassword from './pages/AuthPage/ForgotPassword/ForgotPassword'
+import ResetPassword from './pages/AuthPage/ForgotPassword/ResetPassword'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
+>>>>>>> origin/main
 
 export default function App() {
   const location = useLocation()
@@ -37,6 +43,13 @@ export default function App() {
           <Route path='/dashboard' element={<DashboardPage />} />
           <Route path='/templates' element={<TemplateLibraryPage />} />
           <Route path='/options-template' element={<OptionsTemplatePage />} />
+          <Route path='/slide-generator' element={<SlideGeneratorPage />} />
+
+          {/* --- Route Quên Mật Khẩu & Profile (Mới thêm) --- */}
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
+        </Routes>
 
           <Route element={<AdminRoute />}>
             <Route path='/admin' element={<AdminLayout />}>

@@ -1,12 +1,19 @@
 import axios from 'axios'
 
+<<<<<<< HEAD
 const BASE_URL = 'https://localhost:7259' // Export base URL để dùng hiển thị ảnh
 
 const apiClient = axios.create({
   baseURL: `${BASE_URL}/api`,
+=======
+// Sử dụng proxy qua Vite dev server
+const apiClient = axios.create({
+  baseURL: '/api', // Proxy thông qua Vite dev server
+>>>>>>> origin/main
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false,
 })
 
 // Interceptor để tự động đính kèm Token
@@ -16,6 +23,10 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
+    // Thêm CORS headers
+    config.headers['Access-Control-Allow-Origin'] = '*'
+    config.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    config.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return config
   },
   (error) => {
@@ -23,12 +34,34 @@ apiClient.interceptors.request.use(
   }
 )
 
+<<<<<<< HEAD
 // Helper lấy Base URL (cho ảnh thumbnail)
 export const getBaseUrl = () => BASE_URL
 
 // ================= AUTH APIs =================
+=======
+apiClient.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    console.error('API Error Details:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+      }
+    })
+    return Promise.reject(error)
+  }
+)
+
+>>>>>>> origin/main
 export const login = (credentials) => {
-  return apiClient.post('/auth/login', credentials)
+  return apiClient.post('/Auth/login', credentials)
 }
 
 export const register = (userData) => {
@@ -39,11 +72,48 @@ export const register = (userData) => {
     password: userData.password,
     roleID: roleID,
   }
-  return apiClient.post('/auth/register', dataToSend)
+  return apiClient.post('/Auth/register', dataToSend)
 }
 
+<<<<<<< HEAD
 // ================= ADMIN USER APIs =================
 // (Giữ nguyên mock stats hoặc thay bằng API thật nếu có)
+=======
+// Hàm lấy dữ liệu cho các bộ lọc
+export const getGradesAndClasses = () => {
+  // Giả định bạn có endpoint này để lấy tất cả cấp học và lớp học
+  return apiClient.get('/GDPT/grades-and-classes')
+}
+
+// Hàm lấy tất cả templates
+export const getAllTemplates = (onlyActive = true) => {
+  return apiClient.get(`/Template?onlyActive=${onlyActive}`)
+}
+
+// Hàm lấy chi tiết một template
+export const getTemplateById = (id) => {
+  return apiClient.get(`/Template/${id}`)
+}
+
+// Hàm import dữ liệu chương trình (POST)
+export const importCurriculum = (data) => {
+  return apiClient.post('/GDPT/import', data)
+}
+
+// Hàm import dữ liệu từ file (POST với FormData)
+export const importCurriculumFromFile = (file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return apiClient.post('/GDPT/import-from-file', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
+// ================= ADMIN APIs =================
+
+>>>>>>> origin/main
 export const getAdminStats = () => {
   const mockStats = {
     totalUsers: 150,
@@ -105,6 +175,7 @@ export const deleteTopic = (topicId) => {
   return apiClient.delete(`/GDPT/topics/${topicId}`)
 }
 
+<<<<<<< HEAD
 // ================= PPT TEMPLATE APIs =================
 // (Dùng cho trang Quản lý Template PowerPoint)
 
@@ -147,4 +218,28 @@ export const downloadTemplate = (id) => {
 // Alias để tương thích ngược (nếu có component nào đang dùng getAllTemplates)
 export const getAllTemplates = getTemplates
 
+=======
+// Lấy thông tin hồ sơ người dùng hiện tại
+export const getUserProfile = () => {
+  return apiClient.get('/auth/profile')
+}
+
+// Cập nhật hồ sơ người dùng
+export const updateUserProfile = (userId, userData) => {
+  // userData gồm: username, email, newPassword (nếu có)
+  return apiClient.put(`/auth/users/${userId}`, userData)
+}
+
+// Quên mật khẩu (Gửi yêu cầu reset)
+export const forgotPassword = (email) => {
+  return apiClient.post('/auth/forgot-password', { email })
+}
+
+// Đặt lại mật khẩu (Dùng token)
+export const resetPassword = (data) => {
+  // data gồm: email, token, newPassword
+  return apiClient.post('/auth/reset-password', data)
+}
+
+>>>>>>> origin/main
 export default apiClient
