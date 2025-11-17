@@ -30,7 +30,7 @@ const Header = ({ currentPage }) => {
                 currentPage === "/options-template" ? "active" : ""
               }`}
             >
-              Chọn Template
+              Chọn Chương trình học
             </Link>
             <Link
               to="/templates"

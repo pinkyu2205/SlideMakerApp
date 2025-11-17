@@ -9,7 +9,11 @@ import {
 import { useEffect, useState } from 'react'
 import { InlineMath } from 'react-katex'
 import KaTeXCheatSheet from '../../components/Common/KaTeXCheatSheet'
-import { createTemplate, deleteTopic, getCurriculum } from '../../services/api'
+import {
+  createCurriculum,
+  deleteTopic,
+  getCurriculum,
+} from '../../services/api'
 import './CurriculumManagementPage.css'
 
 // --- CẤU HÌNH MAPPING CẤP - LỚP ---
@@ -155,7 +159,7 @@ const CreateCurriculumForm = ({ onClose, onSuccess }) => {
     try {
       const payload = { topics: [topic] }
       console.log('Submitting:', payload)
-      await createTemplate(payload) // Vẫn dùng API import cũ
+      await createCurriculum(payload)
       alert('Thêm chương trình học thành công!')
       onSuccess()
     } catch (error) {
@@ -506,7 +510,7 @@ const CurriculumManagementPage = () => {
   const [filter, setFilter] = useState({
     grade: 'Cấp 1',
     class: 'Lớp 4',
-    isActive: 'true',
+    isActive: '',
   })
   const [curriculums, setCurriculums] = useState([])
   const [loading, setLoading] = useState(false)
@@ -592,6 +596,7 @@ const CurriculumManagementPage = () => {
 
       {/* Filter Bar */}
       <div className='filter-bar'>
+        {/* ĐÃ THÊM LẠI PHẦN CHỌN CẤP HỌC Ở ĐÂY */}
         <div className='filter-item'>
           <label>Cấp học:</label>
           <select
@@ -607,6 +612,7 @@ const CurriculumManagementPage = () => {
             ))}
           </select>
         </div>
+
         <div className='filter-item'>
           <label>Lớp:</label>
           <select
@@ -620,6 +626,20 @@ const CurriculumManagementPage = () => {
                 {cls}
               </option>
             ))}
+          </select>
+        </div>
+
+        <div className='filter-item'>
+          <label>Trạng thái:</label>
+          <select
+            value={filter.isActive}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, isActive: e.target.value }))
+            }
+          >
+            <option value=''>Tất cả</option>
+            <option value='true'>Đang hoạt động</option>
+            <option value='false'>Đã xóa (Ẩn)</option>
           </select>
         </div>
       </div>
@@ -639,15 +659,15 @@ const CurriculumManagementPage = () => {
                 <th>Chủ đề (Topic)</th>
                 <th>Lớp</th>
                 <th>Mạch kiến thức</th>
-                <th>Trạng thái</th> {/* Cột mới */}
-                <th>Hành động</th> {/* Cột mới */}
+                <th>Trạng thái</th>
+                <th>Hành động</th>
               </tr>
             </thead>
             <tbody>
               {curriculums.length === 0 ? (
                 <tr>
                   <td
-                    colSpan='6'
+                    colSpan='7'
                     style={{ textAlign: 'center', padding: '2rem' }}
                   >
                     Không tìm thấy dữ liệu cho{' '}
@@ -663,7 +683,7 @@ const CurriculumManagementPage = () => {
                     <tr
                       key={item.topicID}
                       className={`topic-row ${
-                        !item.isActive ? 'row-disabled' : ''
+                        !item.isActive ? 'row-inactive' : ''
                       }`}
                       onClick={() => toggleRow(item.topicID)}
                     >

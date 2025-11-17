@@ -1,13 +1,15 @@
 import axios from 'axios'
 
+const BASE_URL = 'https://localhost:7259' // Export base URL để dùng hiển thị ảnh
+
 const apiClient = axios.create({
-  baseURL: 'https://localhost:7259/api', // URL backend của bạn
+  baseURL: `${BASE_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Thêm interceptor để đính kèm token vào mỗi request nếu có
+// Interceptor để tự động đính kèm Token
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken')
@@ -21,12 +23,15 @@ apiClient.interceptors.request.use(
   }
 )
 
+// Helper lấy Base URL (cho ảnh thumbnail)
+export const getBaseUrl = () => BASE_URL
+
+// ================= AUTH APIs =================
 export const login = (credentials) => {
   return apiClient.post('/auth/login', credentials)
 }
 
 export const register = (userData) => {
-  // Backend yêu cầu RoleID là số (Teacher: 2, Student: 3)
   const roleID = userData.role === 'Teacher' ? 2 : 3
   const dataToSend = {
     username: userData.username,
@@ -37,24 +42,8 @@ export const register = (userData) => {
   return apiClient.post('/auth/register', dataToSend)
 }
 
-// Hàm lấy dữ liệu cho các bộ lọc
-export const getGradesAndClasses = () => {
-  // Giả định bạn có endpoint này để lấy tất cả cấp học và lớp học
-  return apiClient.get('/GDPT/grades-and-classes')
-}
-
-// Hàm lấy tất cả templates
-export const getAllTemplates = (onlyActive = true) => {
-  return apiClient.get(`/Template?onlyActive=${onlyActive}`)
-}
-
-// Hàm lấy chi tiết một template
-export const getTemplateById = (id) => {
-  return apiClient.get(`/Template/${id}`)
-}
-
-// ================= ADMIN APIs =================
-
+// ================= ADMIN USER APIs =================
+// (Giữ nguyên mock stats hoặc thay bằng API thật nếu có)
 export const getAdminStats = () => {
   const mockStats = {
     totalUsers: 150,
@@ -87,26 +76,75 @@ export const updateUser = (userId, userData) => {
   return apiClient.put(`/admin/users/${userId}`, userData)
 }
 
-export const createTemplate = (templateData) => {
-  return apiClient.post('/GDPT/import', templateData)
+// ================= GDPT / CURRICULUM APIs =================
+// (Dùng cho trang Quản lý Chương trình học)
+
+export const getGradesAndClasses = () => {
+  return apiClient.get('/GDPT/grades-and-classes')
 }
 
-// Lấy danh sách Template (Topic) theo Grade và Class
-// Dùng endpoint existing: /api/GDPT/curriculum
 export const getCurriculum = (gradeName, className, isActive) => {
   const params = {
     'grade-name': gradeName,
     'class-name': className,
   }
-  if (isActive !== '' && isActive !== null) {
+  if (isActive !== '' && isActive !== null && isActive !== undefined) {
     params['is-active'] = isActive
   }
 
   return apiClient.get('/GDPT', { params })
 }
 
+// [ĐỔI TÊN] createTemplate cũ -> createCurriculum
+// Để tránh trùng với createTemplate của PowerPoint
+export const createCurriculum = (curriculumData) => {
+  return apiClient.post('/GDPT/import', curriculumData)
+}
+
 export const deleteTopic = (topicId) => {
   return apiClient.delete(`/GDPT/topics/${topicId}`)
 }
+
+// ================= PPT TEMPLATE APIs =================
+// (Dùng cho trang Quản lý Template PowerPoint)
+
+// Lấy danh sách Template
+export const getTemplates = (onlyActive = false) => {
+  return apiClient.get(`/template?onlyActive=${onlyActive}`)
+}
+
+// Lấy chi tiết Template
+export const getTemplateById = (id) => {
+  return apiClient.get(`/template/${id}`)
+}
+
+// Tạo Template mới (Multipart/form-data)
+export const createTemplate = (formData) => {
+  return apiClient.post('/template', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}
+
+// Cập nhật Template (Multipart/form-data)
+export const updateTemplate = (id, formData) => {
+  return apiClient.put(`/template/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}
+
+// Xóa Template
+export const deleteTemplate = (id) => {
+  return apiClient.delete(`/template/${id}`)
+}
+
+// Tải file Template
+export const downloadTemplate = (id) => {
+  return apiClient.get(`/template/download/${id}`, {
+    responseType: 'blob',
+  })
+}
+
+// Alias để tương thích ngược (nếu có component nào đang dùng getAllTemplates)
+export const getAllTemplates = getTemplates
 
 export default apiClient
