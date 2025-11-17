@@ -2,26 +2,24 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import Footer from './components/Layout/Footer/Footer'
 import Header from './components/Layout/Header/Header'
+import ForgotPassword from './pages/AuthPage/ForgotPassword/ForgotPassword'
+import ResetPassword from './pages/AuthPage/ForgotPassword/ResetPassword'
 import Login from './pages/AuthPage/Login/Login'
 import Register from './pages/AuthPage/Register/Register'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
 import HomePage from './pages/HomePage/HomePage'
-import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
 
-<<<<<<< HEAD
-// Import các trang Admin
+// Import các trang Admin (Đảm bảo bạn đã import đầy đủ)
 import AdminRoute from './components/Auth/AdminRoute'
 import AdminDashboardPage from './pages/Admin/AdminDashboardPage'
 import AdminLayout from './pages/Admin/AdminLayout'
 import CurriculumManagementPage from './pages/Admin/CurriculumManagementPage'
 import TemplateAdminPage from './pages/Admin/TemplateAdminPage'
 import UserManagementPage from './pages/Admin/UserManagementPage'
-=======
-import ForgotPassword from './pages/AuthPage/ForgotPassword/ForgotPassword'
-import ResetPassword from './pages/AuthPage/ForgotPassword/ResetPassword'
-import ProfilePage from './pages/ProfilePage/ProfilePage'
->>>>>>> origin/main
+import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
+import SlideGeneratorPage from './pages/SlideGeneratorPage/SlideGenerator'
 
 export default function App() {
   const location = useLocation()
@@ -45,11 +43,9 @@ export default function App() {
           <Route path='/options-template' element={<OptionsTemplatePage />} />
           <Route path='/slide-generator' element={<SlideGeneratorPage />} />
 
-          {/* --- Route Quên Mật Khẩu & Profile (Mới thêm) --- */}
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/reset-password' element={<ResetPassword />} />
-        </Routes>
 
           <Route element={<AdminRoute />}>
             <Route path='/admin' element={<AdminLayout />}>
@@ -57,7 +53,6 @@ export default function App() {
                 index
                 element={<Navigate to='/admin/dashboard' replace />}
               />
-
               <Route path='dashboard' element={<AdminDashboardPage />} />
               <Route path='users' element={<UserManagementPage />} />
               <Route path='curriculum' element={<CurriculumManagementPage />} />

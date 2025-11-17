@@ -1,33 +1,35 @@
-import { KeyRound } from 'lucide-react';
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 1. Thêm useNavigate
-import { forgotPassword } from '../../../services/api';
-import '../Login/Login.css';
+import { KeyRound } from 'lucide-react'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom' // 1. Thêm useNavigate
+import { forgotPassword } from '../../../services/api'
+import '../Login/Login.css'
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  
-  const navigate = useNavigate(); // 2. Khởi tạo hook
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  const navigate = useNavigate() // 2. Khởi tạo hook
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage('');
-    setError('');
+    e.preventDefault()
+    setLoading(true)
+    setMessage('')
+    setError('')
 
     try {
-      const response = await forgotPassword(email);
-      setMessage(response.data.message || "Nếu email tồn tại, mã khôi phục đã được gửi.");
+      const response = await forgotPassword(email)
+      setMessage(
+        response.data.message || 'Nếu email tồn tại, mã khôi phục đã được gửi.'
+      )
     } catch (err) {
-      console.error(err);
-      setError('Đã có lỗi xảy ra hoặc không thể kết nối đến server.');
+      console.error(err)
+      setError('Đã có lỗi xảy ra hoặc không thể kết nối đến server.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className='login-page'>
@@ -40,38 +42,43 @@ const ForgotPassword = () => {
               </div>
             </div>
             <h2 className='login-title'>Quên mật khẩu?</h2>
-            <p className='login-subtitle'>Nhập email để nhận hướng dẫn khôi phục.</p>
+            <p className='login-subtitle'>
+              Nhập email để nhận hướng dẫn khôi phục.
+            </p>
           </div>
 
           {message ? (
             // --- 3. CẬP NHẬT GIAO DIỆN KHI THÀNH CÔNG ---
-            <div className="success-content" style={{textAlign: 'center'}}>
-                <div className="message-box success" style={{ 
-                  textAlign: 'center', 
-                  marginBottom: '1.5rem', 
-                  color: '#047857', 
-                  backgroundColor: '#ecfdf5', 
-                  padding: '1rem', 
+            <div className='success-content' style={{ textAlign: 'center' }}>
+              <div
+                className='message-box success'
+                style={{
+                  textAlign: 'center',
+                  marginBottom: '1.5rem',
+                  color: '#047857',
+                  backgroundColor: '#ecfdf5',
+                  padding: '1rem',
                   borderRadius: '0.5rem',
-                  border: '1px solid #a7f3d0'
-                }}>
-                  {message}
-                </div>
-                
-                <p style={{marginBottom: '1rem', color: '#374151'}}>
-                    Đã nhận được mã? Hãy nhập mã để đặt lại mật khẩu.
-                </p>
+                  border: '1px solid #a7f3d0',
+                }}
+              >
+                {message}
+              </div>
 
-                {/* Nút chuyển sang trang Reset Password */}
-                <button 
-                    onClick={() => navigate('/reset-password')}
-                    className='login-button'
-                >
-                    Nhập mã xác nhận ngay
-                </button>
+              <p style={{ marginBottom: '1rem', color: '#374151' }}>
+                Đã nhận được mã? Hãy nhập mã để đặt lại mật khẩu.
+              </p>
+
+              {/* Nút chuyển sang trang Reset Password */}
+              <button
+                onClick={() => navigate('/reset-password')}
+                className='login-button'
+              >
+                Nhập mã xác nhận ngay
+              </button>
             </div>
-            // ---------------------------------------------
           ) : (
+            // ---------------------------------------------
             <form onSubmit={handleSubmit} className='login-form'>
               <div className='form-group'>
                 <label className='form-label'>Email đăng ký</label>
@@ -86,7 +93,13 @@ const ForgotPassword = () => {
               </div>
 
               {error && (
-                <p style={{ color: 'red', textAlign: 'center', fontSize: '0.875rem' }}>
+                <p
+                  style={{
+                    color: 'red',
+                    textAlign: 'center',
+                    fontSize: '0.875rem',
+                  }}
+                >
                   {error}
                 </p>
               )}
@@ -98,14 +111,14 @@ const ForgotPassword = () => {
           )}
 
           <div className='login-footer'>
-            <Link to="/login" className='footer-link'>
+            <Link to='/login' className='footer-link'>
               Quay lại Đăng nhập
             </Link>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ForgotPassword;z``
+export default ForgotPassword

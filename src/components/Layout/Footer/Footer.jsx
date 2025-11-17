@@ -47,13 +47,13 @@ const Footer = () => {
             <ul className='footer-contact'>
               <li>Email: contact@mathslides.com</li>
               <li>Hotline: 1900 xxxx</li>
-              <li>Địa chỉ: Hà Nội, Việt Nam</li>
+              <li>Địa chỉ: Hồ Chí Minh, Việt Nam</li>
             </ul>
           </div>
         </div>
 
         <div className='footer-bottom'>
-          <p>&copy; 2024 MathSlides. All rights reserved.</p>
+          <p>&copy; 2025 MathSlides. All rights reserved.</p>
         </div>
       </div>
     </footer>
