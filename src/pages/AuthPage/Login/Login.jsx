@@ -1,6 +1,6 @@
 import { BookOpen } from 'lucide-react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom' 
 import { login } from '../../../services/api' // Import hàm login
 import './Login.css'
 
@@ -96,7 +96,9 @@ const Login = () => {
                 />
                 <span className='checkbox-text'>Ghi nhớ đăng nhập</span>
               </label> */}
-              <button className='forgot-password'>Quên mật khẩu?</button>
+              <Link to="/forgot-password" className='forgot-password' style={{textDecoration: 'none'}}>
+    Quên mật khẩu?
+</Link>
             </div>
 
             <button onClick={handleLogin} className='login-button'>
