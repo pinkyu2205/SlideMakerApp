@@ -90,8 +90,8 @@ export const getAdminRoles = () => {
   return apiClient.get('/admin/roles')
 }
 
-export const updateUser = (userId, updateData) => {
-  return apiClient.put(`/admin/users/${userId}`, updateData)
+export const updateUser = (userId, userData) => {
+  return apiClient.put(`/admin/users/${userId}`, userData)
 }
 
 export default apiClient
