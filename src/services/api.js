@@ -43,13 +43,6 @@ export const getGradesAndClasses = () => {
   return apiClient.get('/GDPT/grades-and-classes')
 }
 
-// Hàm lấy chương trình học theo lớp
-export const getCurriculum = (gradeName, className) => {
-  return apiClient.get(
-    `/GDPT/curriculum?gradeName=${gradeName}&className=${className}`
-  )
-}
-
 // Hàm lấy tất cả templates
 export const getAllTemplates = (onlyActive = true) => {
   return apiClient.get(`/Template?onlyActive=${onlyActive}`)
@@ -92,6 +85,28 @@ export const getAdminRoles = () => {
 
 export const updateUser = (userId, userData) => {
   return apiClient.put(`/admin/users/${userId}`, userData)
+}
+
+export const createTemplate = (templateData) => {
+  return apiClient.post('/GDPT/import', templateData)
+}
+
+// Lấy danh sách Template (Topic) theo Grade và Class
+// Dùng endpoint existing: /api/GDPT/curriculum
+export const getCurriculum = (gradeName, className, isActive) => {
+  const params = {
+    'grade-name': gradeName,
+    'class-name': className,
+  }
+  if (isActive !== '' && isActive !== null) {
+    params['is-active'] = isActive
+  }
+
+  return apiClient.get('/GDPT', { params })
+}
+
+export const deleteTopic = (topicId) => {
+  return apiClient.delete(`/GDPT/topics/${topicId}`)
 }
 
 export default apiClient
