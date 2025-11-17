@@ -68,14 +68,24 @@ export const getGradesAndClasses = () => {
   return apiClient.get('/GDPT/grades-and-classes')
 }
 
-// Hàm lấy chương trình học theo lớp
+// Hàm lấy chương trình học theo lớp (từ /api/GDPT)
 export const getCurriculum = (gradeName, className) => {
-  return apiClient.get('/GDPT/curriculum', {
+  return apiClient.get('/GDPT', {
     params: {
-      gradeName: gradeName,
-      className: className
+      'grade-name': gradeName,
+      'class-name': className
     }
   })
+}
+
+// Hàm cập nhật topic (Admin only)
+export const updateTopic = (topicId, topicData) => {
+  return apiClient.put(`/GDPT/topic/${topicId}`, topicData)
+}
+
+// Hàm deactivate topic (Admin only)
+export const deactivateTopic = (topicId) => {
+  return apiClient.put(`/GDPT/topic/${topicId}/deactivate`)
 }
 
 // Hàm lấy tất cả templates
@@ -102,21 +112,6 @@ export const importCurriculumFromFile = (file) => {
       'Content-Type': 'multipart/form-data'
     }
   })
-}
-
-// Hàm lấy tất cả topics (cho admin)
-export const getAllTopics = () => {
-  return apiClient.get('/GDPT/topics')
-}
-
-// Hàm update topic (soft delete - set isActive = false)
-export const updateTopic = (topicId, topicData) => {
-  return apiClient.put(`/GDPT/topics/${topicId}`, topicData)
-}
-
-// Hàm xoá topic (soft delete - chỉ set isActive = false)
-export const deactivateTopic = (topicId) => {
-  return apiClient.put(`/GDPT/topics/${topicId}`, { isActive: false })
 }
 
 // ================= ADMIN APIs =================

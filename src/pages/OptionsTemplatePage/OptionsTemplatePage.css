@@ -543,46 +543,25 @@
   }
 }
 
-/* Admin Features */
-.btn-admin-all {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
+/* Inactive Topic Badge */
+.badge-inactive {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: all 0.3s ease;
 }
 
-.btn-admin-all:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+.topic-card.inactive {
+  opacity: 0.7;
+  background-color: #f9fafb;
 }
 
-/* Admin All Topics Section */
-.admin-all-topics-section {
-  margin-top: 2rem;
-  padding: 2rem;
-  background-color: #faf5ff;
-  border: 2px solid #e9d5ff;
-  border-radius: 1rem;
-}
-
-.admin-topics-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e9d5ff;
-}
-
-.admin-topics-header h2 {
-  margin: 0;
-  color: #6b21a8;
-  font-size: 1.5rem;
+.topic-card.inactive .topic-card-header {
+  background-color: #f3f4f6;
 }
 
 /* Topic Admin Actions */
@@ -590,7 +569,7 @@
   display: flex;
   gap: 0.5rem;
   margin-top: 0.75rem;
-  padding-top: 0.75rem;
+  padding: 0.75rem 1.5rem 0;
   border-top: 1px solid #e5e7eb;
 }
 
@@ -627,7 +606,7 @@
 
 /* Topic Edit Form */
 .topic-edit-form {
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   background-color: #f9fafb;
   border-radius: 0.5rem;
   display: flex;
@@ -701,26 +680,5 @@
 
 .btn-secondary:hover {
   background-color: #d1d5db;
-}
-
-/* Inactive Topic Badge */
-.badge-inactive {
-  display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  background-color: #fee2e2;
-  color: #991b1b;
-  border-radius: 0.25rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.topic-card.inactive {
-  opacity: 0.7;
-  background-color: #f9fafb;
-}
-
-.topic-card.inactive .topic-card-header {
-  background-color: #f3f4f6;
 }
 
