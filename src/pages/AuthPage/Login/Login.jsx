@@ -53,7 +53,10 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(userData))
       console.log('✅ User saved:', userData)
       
-      navigate('/dashboard') // Chuyển đến trang dashboard sau khi đăng nhập
+      // Refresh page để cập nhật Header menu
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
     } catch (err) {
       // Cập nhật xử lý lỗi để hiển thị Network Error
       let errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại.'

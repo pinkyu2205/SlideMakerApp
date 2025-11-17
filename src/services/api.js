@@ -104,6 +104,21 @@ export const importCurriculumFromFile = (file) => {
   })
 }
 
+// Hàm lấy tất cả topics (cho admin)
+export const getAllTopics = () => {
+  return apiClient.get('/GDPT/topics')
+}
+
+// Hàm update topic (soft delete - set isActive = false)
+export const updateTopic = (topicId, topicData) => {
+  return apiClient.put(`/GDPT/topics/${topicId}`, topicData)
+}
+
+// Hàm xoá topic (soft delete - chỉ set isActive = false)
+export const deactivateTopic = (topicId) => {
+  return apiClient.put(`/GDPT/topics/${topicId}`, { isActive: false })
+}
+
 // ================= ADMIN APIs =================
 
 export const getAdminStats = () => {

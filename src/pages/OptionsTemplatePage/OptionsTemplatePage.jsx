@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { getCurriculum } from '../../services/api'
+import { useState, useEffect } from 'react'
+import { getCurriculum, getAllTopics, updateTopic, deactivateTopic } from '../../services/api'
 import './OptionsTemplatePage.css'
 
 const OptionsTemplatePage = () => {
@@ -9,6 +9,11 @@ const OptionsTemplatePage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [expandedTopicId, setExpandedTopicId] = useState(null)
+  const [user, setUser] = useState(null)
+  const [showAllTopics, setShowAllTopics] = useState(false)
+  const [editingTopicId, setEditingTopicId] = useState(null)
+  const [editingTopicData, setEditingTopicData] = useState({})
+  const [adminTopics, setAdminTopics] = useState([])
 
   // Định nghĩa cấp học và lớp tương ứng
   const gradeOptions = {
@@ -32,18 +37,112 @@ const OptionsTemplatePage = () => {
     }
   }
 
+  useEffect(() => {
+    // Load user data from localStorage
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser)
+        setUser(userData)
+        console.log('🔍 User data loaded:', userData)
+      } catch (error) {
+        console.error('Error parsing user data:', error)
+      }
+    }
+  }, [])
+
+  // Check if user is admin
+  const isAdmin = user && (
+    user.roleID === 1 || 
+    user.roleId === 1 || 
+    user.role === 'Admin' || 
+    user.role === 'admin'
+  )
+
+  // Fetch all topics for admin
+  const fetchAllTopics = async () => {
+    try {
+      setLoading(true)
+      console.log('📚 Fetching all topics for admin...')
+      const response = await getAllTopics()
+      console.log('✅ All topics:', response.data)
+      setAdminTopics(response.data || [])
+      setShowAllTopics(true)
+      setError(null)
+    } catch (err) {
+      console.error('❌ Error fetching all topics:', err)
+      setError('Không thể tải danh sách topics')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEditTopic = (topic) => {
+    setEditingTopicId(topic.topicID)
+    setEditingTopicData({ ...topic })
+  }
+
+  const handleSaveEditTopic = async (topicId) => {
+    try {
+      setLoading(true)
+      console.log('💾 Saving topic:', editingTopicData)
+      await updateTopic(topicId, editingTopicData)
+      console.log('✅ Topic updated successfully')
+      
+      // Update local state
+      setAdminTopics(adminTopics.map(t => 
+        t.topicID === topicId ? editingTopicData : t
+      ))
+      setEditingTopicId(null)
+      setEditingTopicData({})
+    } catch (err) {
+      console.error('❌ Error updating topic:', err)
+      setError('Không thể cập nhật topic')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteTopic = async (topicId) => {
+    if (window.confirm('Bạn có chắc muốn ẩn topic này?')) {
+      try {
+        setLoading(true)
+        console.log('🗑️ Deactivating topic:', topicId)
+        await deactivateTopic(topicId)
+        console.log('✅ Topic deactivated successfully')
+        
+        // Update local state
+        setAdminTopics(adminTopics.map(t => 
+          t.topicID === topicId ? { ...t, isActive: false } : t
+        ))
+      } catch (err) {
+        console.error('❌ Error deleting topic:', err)
+        setError('Không thể xoá topic')
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingTopicId(null)
+    setEditingTopicData({})
+  }
+
   const handleGradeSelect = (gradeKey) => {
     console.log('Selected grade:', gradeKey)
     setSelectedGrade(gradeKey)
     setSelectedClass(null)
     setTopics([])
     setError(null)
+    setShowAllTopics(false)
   }
 
   const handleClassSelect = async (className) => {
     console.log('Selected class:', className, 'Grade:', selectedGrade)
     setSelectedClass(className)
     setExpandedTopicId(null)
+    setShowAllTopics(false)
     await fetchTopics(className, selectedGrade)
   }
 
@@ -65,8 +164,10 @@ const OptionsTemplatePage = () => {
       
       if (response.data && Array.isArray(response.data)) {
         console.log('📚 Topics loaded:', response.data)
-        setTopics(response.data)
-        if (response.data.length === 0) {
+        // Filter topics by isActive status for non-admin users
+        const filteredTopics = isAdmin ? response.data : response.data.filter(t => t.isActive !== false)
+        setTopics(filteredTopics)
+        if (filteredTopics.length === 0) {
           setError('Chưa có chương trình học cho lớp này')
         }
       } else {
@@ -105,6 +206,7 @@ const OptionsTemplatePage = () => {
     setTopics([])
     setError(null)
     setExpandedTopicId(null)
+    setShowAllTopics(false)
   }
 
   const toggleTopicExpand = (topicId) => {
@@ -113,6 +215,123 @@ const OptionsTemplatePage = () => {
     } else {
       setExpandedTopicId(topicId)
     }
+  }
+
+  // Render topics list (for both regular view and admin view)
+  const renderTopicsList = (topicsList) => {
+    return (
+      <div className='topics-list'>
+        {topicsList.map((topic) => (
+          <div key={topic.topicID} className={`topic-card ${!topic.isActive ? 'inactive' : ''}`}>
+            {/* Admin Edit Mode */}
+            {editingTopicId === topic.topicID && isAdmin ? (
+              <div className='topic-edit-form'>
+                <input
+                  type='text'
+                  value={editingTopicData.topicName || ''}
+                  onChange={(e) => setEditingTopicData({ ...editingTopicData, topicName: e.target.value })}
+                  placeholder='Tên chủ đề'
+                  className='form-input'
+                />
+                <input
+                  type='text'
+                  value={editingTopicData.strandName || ''}
+                  onChange={(e) => setEditingTopicData({ ...editingTopicData, strandName: e.target.value })}
+                  placeholder='Lĩnh vực'
+                  className='form-input'
+                />
+                <div className='form-checkbox'>
+                  <label>
+                    <input
+                      type='checkbox'
+                      checked={editingTopicData.isActive !== false}
+                      onChange={(e) => setEditingTopicData({ ...editingTopicData, isActive: e.target.checked })}
+                    />
+                    Hoạt động (Active)
+                  </label>
+                </div>
+                <div className='form-buttons'>
+                  <button 
+                    className='btn btn-primary'
+                    onClick={() => handleSaveEditTopic(topic.topicID)}
+                  >
+                    💾 Lưu
+                  </button>
+                  <button 
+                    className='btn btn-secondary'
+                    onClick={handleCancelEdit}
+                  >
+                    ❌ Huỷ
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Topic Header - Click to expand */}
+                <div 
+                  className={`topic-card-header ${expandedTopicId === topic.topicID ? 'expanded' : ''}`}
+                  onClick={() => toggleTopicExpand(topic.topicID)}
+                >
+                  <div className='topic-header-content'>
+                    <h3 className='topic-name'>
+                      {topic.topicName}
+                      {!topic.isActive && <span className='badge-inactive'>[Ẩn]</span>}
+                    </h3>
+                    <p className='topic-strand'>{topic.strandName}</p>
+                  </div>
+                  <div className='topic-expand-icon'>
+                    {expandedTopicId === topic.topicID ? '▼' : '▶'}
+                  </div>
+                </div>
+
+                {/* Admin Action Buttons */}
+                {isAdmin && (
+                  <div className='topic-admin-actions'>
+                    <button 
+                      className='btn-admin btn-edit'
+                      onClick={() => handleEditTopic(topic)}
+                      title='Chỉnh sửa topic'
+                    >
+                      ✏️ Sửa
+                    </button>
+                    <button 
+                      className='btn-admin btn-delete'
+                      onClick={() => handleDeleteTopic(topic.topicID)}
+                      title='Ẩn topic'
+                    >
+                      🗑️ Ẩn
+                    </button>
+                  </div>
+                )}
+
+                {/* Contents - Show when expanded */}
+                {expandedTopicId === topic.topicID && (
+                  <div className='topic-contents'>
+                    {topic.contents && topic.contents.length > 0 ? (
+                      <div className='contents-list'>
+                        {topic.contents.map((content) => (
+                          <div key={content.contentID} className='content-item'>
+                            <div className='content-info'>
+                              <h4 className='content-title'>{content.title}</h4>
+                              <p className='content-summary'>{content.summary}</p>
+                            </div>
+                            <button className='create-slide-btn'>
+                              ✏️ Tạo Slide
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className='no-contents'>Chủ đề này không có nội dung</p>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -124,133 +343,133 @@ const OptionsTemplatePage = () => {
           <p className='options-template-subtitle'>
             Vui lòng chọn cấp học và lớp học để xem các chủ đề
           </p>
+          
+          {/* Admin View All Topics Button */}
+          {isAdmin && !showAllTopics && (
+            <button 
+              className='btn btn-admin-all'
+              onClick={fetchAllTopics}
+            >
+              👑 Xem Tất Cả Topics (Admin)
+            </button>
+          )}
         </div>
 
-        {/* Grade Selection Section */}
-        <div className='grade-section'>
-          <h2 className='section-title'>Chọn Cấp</h2>
-          <div className='grade-cards'>
-            {Object.entries(gradeOptions).map(([gradeKey, gradeData]) => (
-              <div
-                key={gradeKey}
-                className={`grade-card ${selectedGrade === gradeKey ? 'active' : ''}`}
-                onClick={() => handleGradeSelect(gradeKey)}
+        {/* Admin Topics View */}
+        {isAdmin && showAllTopics && (
+          <div className='admin-all-topics-section'>
+            <div className='admin-topics-header'>
+              <h2>📋 Tất Cả Topics (Quản Lý)</h2>
+              <button 
+                className='btn btn-secondary'
+                onClick={() => setShowAllTopics(false)}
               >
-                <div className='grade-card-content'>
-                  <h3 className='grade-name'>{gradeData.name}</h3>
-                  <p className='grade-description'>{gradeData.description}</p>
-                </div>
-                <div className={`grade-checkbox ${selectedGrade === gradeKey ? 'checked' : ''}`}>
-                  {selectedGrade === gradeKey && <span className='checkmark'>✓</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Class Selection Section */}
-        {selectedGrade && (
-          <div className='class-section'>
-            <h2 className='section-title'>Chọn Lớp</h2>
-            <div className='class-buttons'>
-              {gradeOptions[selectedGrade].classes.map((className) => (
-                <button
-                  key={className}
-                  className={`class-button ${selectedClass === className ? 'active' : ''}`}
-                  onClick={() => handleClassSelect(className)}
-                >
-                  {className}
-                </button>
-              ))}
+                ← Quay Lại
+              </button>
             </div>
-          </div>
-        )}
 
-        {/* Topics Section */}
-        {selectedClass && (
-          <div className='topics-section'>
-            <h2 className='section-title'>Chủ Đề Học Tập</h2>
-            
             {loading && (
-              <div className='loading-message'>⏳ Đang tải chương trình học...</div>
+              <div className='loading-message'>⏳ Đang tải...</div>
             )}
 
             {error && (
               <div className='error-message'>⚠️ {error}</div>
             )}
 
-            {!loading && !error && topics.length > 0 && (
-              <div className='topics-list'>
-                {topics.map((topic) => (
-                  <div key={topic.topicID} className='topic-card'>
-                    {/* Topic Header - Click to expand */}
-                    <div 
-                      className={`topic-card-header ${expandedTopicId === topic.topicID ? 'expanded' : ''}`}
-                      onClick={() => toggleTopicExpand(topic.topicID)}
-                    >
-                      <div className='topic-header-content'>
-                        <h3 className='topic-name'>{topic.topicName}</h3>
-                        <p className='topic-strand'>{topic.strandName}</p>
-                      </div>
-                      <div className='topic-expand-icon'>
-                        {expandedTopicId === topic.topicID ? '▼' : '▶'}
-                      </div>
-                    </div>
+            {!loading && adminTopics.length > 0 && renderTopicsList(adminTopics)}
+            {!loading && adminTopics.length === 0 && (
+              <div className='no-topics'>📭 Không có topics nào</div>
+            )}
+          </div>
+        )}
 
-                    {/* Contents - Show when expanded */}
-                    {expandedTopicId === topic.topicID && (
-                      <div className='topic-contents'>
-                        {topic.contents && topic.contents.length > 0 ? (
-                          <div className='contents-list'>
-                            {topic.contents.map((content) => (
-                              <div key={content.contentID} className='content-item'>
-                                <div className='content-info'>
-                                  <h4 className='content-title'>{content.title}</h4>
-                                  <p className='content-summary'>{content.summary}</p>
-                                </div>
-                                <button className='create-slide-btn'>
-                                  ✏️ Tạo Slide
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className='no-contents'>Chủ đề này không có nội dung</p>
-                        )}
-                      </div>
-                    )}
+        {/* Regular User View */}
+        {!showAllTopics && (
+          <>
+            {/* Grade Selection Section */}
+            <div className='grade-section'>
+              <h2 className='section-title'>Chọn Cấp</h2>
+              <div className='grade-cards'>
+                {Object.entries(gradeOptions).map(([gradeKey, gradeData]) => (
+                  <div
+                    key={gradeKey}
+                    className={`grade-card ${selectedGrade === gradeKey ? 'active' : ''}`}
+                    onClick={() => handleGradeSelect(gradeKey)}
+                  >
+                    <div className='grade-card-content'>
+                      <h3 className='grade-name'>{gradeData.name}</h3>
+                      <p className='grade-description'>{gradeData.description}</p>
+                    </div>
+                    <div className={`grade-checkbox ${selectedGrade === gradeKey ? 'checked' : ''}`}>
+                      {selectedGrade === gradeKey && <span className='checkmark'>✓</span>}
+                    </div>
                   </div>
                 ))}
               </div>
-            )}
+            </div>
 
-            {!loading && !error && topics.length === 0 && (
-              <div className='no-topics'>
-                📭 Chưa có chủ đề nào cho lớp này
+            {/* Class Selection Section */}
+            {selectedGrade && (
+              <div className='class-section'>
+                <h2 className='section-title'>Chọn Lớp</h2>
+                <div className='class-buttons'>
+                  {gradeOptions[selectedGrade].classes.map((className) => (
+                    <button
+                      key={className}
+                      className={`class-button ${selectedClass === className ? 'active' : ''}`}
+                      onClick={() => handleClassSelect(className)}
+                    >
+                      {className}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
-          </div>
-        )}
 
-        {/* Action Buttons */}
-        {(selectedGrade || selectedClass) && (
-          <div className='action-buttons'>
-            <button
-              className='btn btn-secondary'
-              onClick={handleReset}
-            >
-              🔄 Đặt Lại
-            </button>
-          </div>
-        )}
+            {/* Topics Section */}
+            {selectedClass && (
+              <div className='topics-section'>
+                <h2 className='section-title'>Chủ Đề Học Tập</h2>
+                
+                {loading && (
+                  <div className='loading-message'>⏳ Đang tải chương trình học...</div>
+                )}
 
-        {/* Summary */}
-        {selectedGrade && selectedClass && (
-          <div className='selection-summary'>
-            <p>
-              Bạn đã chọn: <strong>{gradeOptions[selectedGrade].name}</strong> - <strong>{selectedClass}</strong>
-            </p>
-          </div>
+                {error && (
+                  <div className='error-message'>⚠️ {error}</div>
+                )}
+
+                {!loading && !error && topics.length > 0 && renderTopicsList(topics)}
+
+                {!loading && !error && topics.length === 0 && (
+                  <div className='no-topics'>
+                    📭 Chưa có chủ đề nào cho lớp này
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            {(selectedGrade || selectedClass) && (
+              <div className='action-buttons'>
+                <button
+                  className='btn btn-secondary'
+                  onClick={handleReset}
+                >
+                  🔄 Đặt Lại
+                </button>
+              </div>
+            )}
+
+            {/* Summary */}
+            {selectedGrade && selectedClass && (
+              <div className='selection-summary'>
+                <p>
+                  Bạn đã chọn: <strong>{gradeOptions[selectedGrade].name}</strong> - <strong>{selectedClass}</strong>
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -1,10 +1,11 @@
-import { BookOpen, Menu, X, LogOut } from "lucide-react";
+import { BookOpen, Menu, X, LogOut, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 
 const Header = ({ currentPage }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -92,17 +93,61 @@ const Header = ({ currentPage }) => {
             <button className="nav-link">Hướng dẫn</button>
 
             {user ? (
-              <div className="user-menu">
-                <span className="user-info">
-                  <span className="user-name">
+              <div className="user-menu-wrapper">
+                <button
+                  className="user-menu-button"
+                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                >
+                  <span className="user-menu-name">
                     {user.fullName || user.username || user.email || user.name || 'User'}
                   </span>
-                  <span className="user-role">({user.role || user.roleType || 'User'})</span>
-                </span>
-                <button onClick={handleLogout} className="btn-logout">
-                  <LogOut size={18} />
-                  Đăng xuất
+                  <ChevronDown size={18} className={`dropdown-icon ${isUserDropdownOpen ? 'open' : ''}`} />
                 </button>
+
+                {isUserDropdownOpen && (
+                  <div className="user-dropdown-menu">
+                    <div className="dropdown-header">
+                      <div className="dropdown-user-info">
+                        <p className="dropdown-name">
+                          {user.fullName || user.username || user.email || user.name}
+                        </p>
+                        <p className="dropdown-role">
+                          {user.role || user.roleType || 'User'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="dropdown-divider" />
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        navigate('/dashboard');
+                        setIsUserDropdownOpen(false);
+                      }}
+                    >
+                      Trang cá nhân
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        navigate('/dashboard');
+                        setIsUserDropdownOpen(false);
+                      }}
+                    >
+                      Cài đặt
+                    </button>
+                    <div className="dropdown-divider" />
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsUserDropdownOpen(false);
+                      }}
+                      className="dropdown-item logout-item"
+                    >
+                      <LogOut size={16} />
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <>
