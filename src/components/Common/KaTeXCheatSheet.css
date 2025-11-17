@@ -1,0 +1,159 @@
+.katex-cheat-sheet {
+  position: fixed;
+  top: 20px; /* Vị trí mặc định */
+  right: 20px; /* Vị trí mặc định */
+  width: 320px;
+  max-height: 80vh;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid #d1d5db;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999; /* Quan trọng: Cao hơn Modal (thường là 1000-2000) */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.cheat-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  color: white;
+  border-radius: 8px 8px 0 0;
+  cursor: move; /* Con trỏ di chuyển */
+  user-select: none;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.cheat-sheet-body {
+  padding: 15px;
+  overflow-y: auto;
+  flex-grow: 1;
+  background-color: #f9fafb;
+  border-radius: 0 0 8px 8px;
+}
+
+.formula-group {
+  margin-bottom: 15px;
+}
+
+.formula-group h4 {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 700;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+
+.formula-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.formula-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.formula-item:hover {
+  border-color: #06b6d4;
+  box-shadow: 0 2px 5px rgba(6, 182, 212, 0.15);
+  transform: translateY(-1px);
+}
+
+.formula-display {
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+  color: #1f2937;
+}
+
+.formula-code {
+  font-size: 0.75rem;
+  color: #0891b2;
+  background-color: #ecfeff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Copy Overlay Effect */
+.copy-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(6, 182, 212, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: 6px;
+}
+
+.formula-item:hover .copy-overlay {
+  opacity: 1;
+}
+
+.copied-text {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.cheat-sheet-footer {
+  text-align: center;
+  color: #9ca3af;
+  margin-top: 10px;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+/* Tùy chỉnh thanh cuộn */
+.cheat-sheet-body::-webkit-scrollbar {
+  width: 6px;
+}
+.cheat-sheet-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.cheat-sheet-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
