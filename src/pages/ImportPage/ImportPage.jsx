@@ -74,8 +74,31 @@ const ImportPage = () => {
       setError(null)
       setSuccess(null)
 
-      console.log('📤 Importing curriculum data:', formData)
-      const response = await importCurriculum(formData)
+      // Build the correct API payload structure
+      const payload = {
+        topics: [
+          {
+            topicName: formData.topicName,
+            className: formData.className,
+            gradeName: formData.gradeName,
+            strandName: formData.strandName || '',
+            objectives: '',
+            source: '',
+            contents: formData.contentTitle || formData.contentSummary ? [
+              {
+                title: formData.contentTitle || '',
+                summary: formData.contentSummary || '',
+                formulas: [],
+                examples: [],
+                media: [],
+              }
+            ] : [],
+          }
+        ]
+      }
+
+      console.log('📤 Importing curriculum data:', payload)
+      const response = await importCurriculum(payload)
       
       console.log('✅ Import successful:', response.data)
       setSuccess('✅ Nhập dữ liệu thành công!')
