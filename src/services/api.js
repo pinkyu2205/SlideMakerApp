@@ -109,4 +109,26 @@ export const deleteTopic = (topicId) => {
   return apiClient.delete(`/GDPT/topics/${topicId}`)
 }
 
+// Lấy thông tin hồ sơ người dùng hiện tại
+export const getUserProfile = () => {
+  return apiClient.get('/auth/profile')
+}
+
+// Cập nhật hồ sơ người dùng
+export const updateUserProfile = (userId, userData) => {
+  // userData gồm: username, email, newPassword (nếu có)
+  return apiClient.put(`/auth/users/${userId}`, userData)
+}
+
+// Quên mật khẩu (Gửi yêu cầu reset)
+export const forgotPassword = (email) => {
+  return apiClient.post('/auth/forgot-password', { email })
+}
+
+// Đặt lại mật khẩu (Dùng token)
+export const resetPassword = (data) => {
+  // data gồm: email, token, newPassword
+  return apiClient.post('/auth/reset-password', data)
+}
+
 export default apiClient

@@ -9,8 +9,8 @@ const Header = ({ currentPage }) => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Logic kiểm tra user mỗi khi chuyển trang (currentPage thay đổi)
-  useEffect(() => {
+  // Hàm helper: Đọc thông tin user từ localStorage
+  const loadUserFromStorage = () => {
     const userString = localStorage.getItem("user");
     if (userString) {
       try {
@@ -23,8 +23,26 @@ const Header = ({ currentPage }) => {
     } else {
       setUser(null);
     }
-  }, [currentPage]); // Chạy lại khi route thay đổi
+  };
 
+  // Effect: Theo dõi thay đổi user
+  useEffect(() => {
+    // 1. Load lần đầu khi component mount hoặc đổi trang
+    loadUserFromStorage();
+
+    // 2. Lắng nghe sự kiện custom "userUpdated" (từ ProfilePage bắn ra)
+    const handleUserUpdate = () => {
+      loadUserFromStorage();
+    };
+    window.addEventListener("userUpdated", handleUserUpdate);
+
+    // 3. Cleanup listener khi component unmount
+    return () => {
+      window.removeEventListener("userUpdated", handleUserUpdate);
+    };
+  }, [currentPage]); 
+
+  // Hàm đăng xuất
   const handleLogout = () => {
     // 1. Xóa thông tin trong localStorage
     localStorage.removeItem("user");
@@ -35,7 +53,7 @@ const Header = ({ currentPage }) => {
     setIsUserDropdownOpen(false);
     setIsMenuOpen(false);
 
-    // 3. Chuyển hướng về trang login hoặc trang chủ
+    // 3. Chuyển hướng về trang login
     navigate("/login");
   };
 
@@ -44,10 +62,14 @@ const Header = ({ currentPage }) => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
 
+  // Logic hiển thị tên: Ưu tiên username, fallback về email
+  const displayName = user?.username || user?.email;
+
   return (
     <header className="header">
       <nav className="header-container">
         <div className="header-content">
+          {/* Logo */}
           <Link to="/" className="header-logo">
             <BookOpen className="logo-icon" />
             <span className="logo-text">MathSlides</span>
@@ -86,14 +108,14 @@ const Header = ({ currentPage }) => {
               Tạo Slide
             </Link>
             
-            {/* LOGIC HIỂN THỊ USER HOẶC NÚT ĐĂNG NHẬP */}
+            {/* LOGIC HIỂN THỊ USER PROFILE */}
             {user ? (
               <div className="user-profile-container">
                 <div 
                   className="user-profile-trigger" 
                   onClick={toggleUserDropdown}
                 >
-                  {/* Hiển thị Avatar (nếu không có thì dùng icon mặc định) */}
+                  {/* Avatar */}
                   <div className="user-avatar">
                     {user.avatar ? (
                       <img src={user.avatar} alt="User Avatar" />
@@ -101,26 +123,35 @@ const Header = ({ currentPage }) => {
                       <User className="default-avatar-icon" />
                     )}
                   </div>
-                  <span className="user-name">{user.username || user.email}</span>
+                  
+                  {/* Tên hiển thị (đã xử lý logic ưu tiên username) */}
+                  <span className="user-name" title={displayName}>
+                    {displayName}
+                  </span>
+                  
                   <ChevronDown size={16} />
                 </div>
 
-                {/* User Dropdown Menu */}
+                {/* Dropdown Menu */}
                 {isUserDropdownOpen && (
                   <div className="user-dropdown">
                     <div className="dropdown-header">
                       <span className="dropdown-role">{user.role || "User"}</span>
                     </div>
-                    <Link to="/profile" className="dropdown-item">
+                    
+                    <Link to="/profile" className="dropdown-item" onClick={() => setIsUserDropdownOpen(false)}>
                       <User size={16} /> Hồ sơ cá nhân
                     </Link>
-                    {/* Nếu là Admin thì hiện link Dashboard */}
+                    
+                    {/* Link Dashboard cho Admin */}
                     {user.role === 'Admin' && (
-                         <Link to="/admin/dashboard" className="dropdown-item">
+                         <Link to="/admin/dashboard" className="dropdown-item" onClick={() => setIsUserDropdownOpen(false)}>
                          <BookOpen size={16} /> Quản trị
                        </Link>
                     )}
+                    
                     <div className="dropdown-divider"></div>
+                    
                     <button onClick={handleLogout} className="dropdown-item logout">
                       <LogOut size={16} /> Đăng xuất
                     </button>
@@ -128,7 +159,7 @@ const Header = ({ currentPage }) => {
                 )}
               </div>
             ) : (
-              // Nếu chưa đăng nhập thì hiện nút cũ
+              // Nếu chưa đăng nhập: Nút Login/Register
               <>
                 <Link to="/login" className="nav-link">
                   Đăng nhập
@@ -143,7 +174,7 @@ const Header = ({ currentPage }) => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Toggle Button */}
           <button
             className="menu-toggle"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -156,10 +187,10 @@ const Header = ({ currentPage }) => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation Menu */}
         {isMenuOpen && (
           <div className="nav-mobile">
-            {/* Nếu đã đăng nhập, hiện thông tin user trên mobile */}
+            {/* Thông tin User trên Mobile */}
             {user && (
               <div className="mobile-user-info">
                 <div className="mobile-user-header">
@@ -171,7 +202,7 @@ const Header = ({ currentPage }) => {
                     )}
                   </div>
                   <div className="mobile-user-details">
-                    <span className="mobile-user-name">{user.username}</span>
+                    <span className="mobile-user-name">{displayName}</span>
                     <span className="mobile-user-role">{user.role}</span>
                   </div>
                 </div>
@@ -193,7 +224,7 @@ const Header = ({ currentPage }) => {
               Thư viện Template
             </Link>
             
-            {/* Nếu chưa đăng nhập thì hiện Link đăng nhập/đăng ký */}
+            {/* Link cho Mobile khi chưa đăng nhập */}
             {!user ? (
               <>
                 <Link
@@ -214,7 +245,7 @@ const Header = ({ currentPage }) => {
                 </button>
               </>
             ) : (
-              // Nếu đã đăng nhập thì hiện nút Đăng xuất
+              // Link Logout cho Mobile
               <button 
                 onClick={handleLogout}
                 className="nav-mobile-link mobile-logout"
