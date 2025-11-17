@@ -1,14 +1,16 @@
 import { KeyRound } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { forgotPassword } from '../../../services/api'; // Đảm bảo đường dẫn import api đúng
-import '../Login/Login.css'; // Tái sử dụng CSS của Login
+import { Link, useNavigate } from 'react-router-dom'; // 1. Thêm useNavigate
+import { forgotPassword } from '../../../services/api';
+import '../Login/Login.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  
+  const navigate = useNavigate(); // 2. Khởi tạo hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,9 +19,7 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      // Gọi API forgot-password
       const response = await forgotPassword(email);
-      // Hiển thị thông báo thành công (API luôn trả về success để bảo mật)
       setMessage(response.data.message || "Nếu email tồn tại, mã khôi phục đã được gửi.");
     } catch (err) {
       console.error(err);
@@ -44,17 +44,33 @@ const ForgotPassword = () => {
           </div>
 
           {message ? (
-            <div className="message-box success" style={{ 
-              textAlign: 'center', 
-              marginBottom: '1.5rem', 
-              color: '#047857', 
-              backgroundColor: '#ecfdf5', 
-              padding: '1rem', 
-              borderRadius: '0.5rem',
-              border: '1px solid #a7f3d0'
-            }}>
-              {message}
+            // --- 3. CẬP NHẬT GIAO DIỆN KHI THÀNH CÔNG ---
+            <div className="success-content" style={{textAlign: 'center'}}>
+                <div className="message-box success" style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '1.5rem', 
+                  color: '#047857', 
+                  backgroundColor: '#ecfdf5', 
+                  padding: '1rem', 
+                  borderRadius: '0.5rem',
+                  border: '1px solid #a7f3d0'
+                }}>
+                  {message}
+                </div>
+                
+                <p style={{marginBottom: '1rem', color: '#374151'}}>
+                    Đã nhận được mã? Hãy nhập mã để đặt lại mật khẩu.
+                </p>
+
+                {/* Nút chuyển sang trang Reset Password */}
+                <button 
+                    onClick={() => navigate('/reset-password')}
+                    className='login-button'
+                >
+                    Nhập mã xác nhận ngay
+                </button>
             </div>
+            // ---------------------------------------------
           ) : (
             <form onSubmit={handleSubmit} className='login-form'>
               <div className='form-group'>
@@ -92,4 +108,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPassword;z``

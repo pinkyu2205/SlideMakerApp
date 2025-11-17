@@ -16,6 +16,7 @@ import SlideGeneratorPage from './pages/SlideGeneratorPage/SlideGenerator'
 import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
 
 import ForgotPassword from './pages/AuthPage/ForgotPassword/ForgotPassword'
+import ResetPassword from './pages/AuthPage/ForgotPassword/ResetPassword'
 import ProfilePage from './pages/ProfilePage/ProfilePage'
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
           {/* --- Route Quên Mật Khẩu & Profile (Mới thêm) --- */}
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
         </Routes>
 
         <Routes element={<AdminRoute />}>

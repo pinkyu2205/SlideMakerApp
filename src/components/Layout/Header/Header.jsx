@@ -84,13 +84,23 @@ const Header = ({ currentPage }) => {
               Trang chủ
             </Link>
             <Link
-              to="/options-template"
+              to="/curriculum"
               className={`nav-link ${
-                currentPage === "/options-template" ? "active" : ""
+                currentPage === "/curriculum" ? "active" : ""
               }`}
             >
-              Chọn Template
+              GDPT
             </Link>
+            {isAdmin && (
+              <Link
+                to="/import"
+                className={`nav-link ${
+                  currentPage === "/import" ? "active" : ""
+                }`}
+              >
+                📝 Đăng bài
+              </Link>
+            )}
             <Link
               to="/templates"
               className={`nav-link ${
@@ -217,11 +227,11 @@ const Header = ({ currentPage }) => {
               Trang chủ
             </Link>
             <Link
-              to="/templates"
+              to="/curriculum"
               onClick={() => setIsMenuOpen(false)}
               className="nav-mobile-link"
             >
-              Thư viện Template
+              GDPT
             </Link>
             
             {/* Link cho Mobile khi chưa đăng nhập */}
