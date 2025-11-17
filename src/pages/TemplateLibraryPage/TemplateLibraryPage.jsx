@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import TemplateCard from '../../components/TemplateCard/TemplateCard'
-import { getAllTemplates } from '../../services/api'
+import { getAllTemplates, getBaseUrl } from '../../services/api' // Import thêm getBaseUrl
 import './TemplateLibraryPage.css'
 
 const TemplateLibraryPage = () => {
@@ -12,8 +12,7 @@ const TemplateLibraryPage = () => {
     const fetchTemplates = async () => {
       try {
         setLoading(true)
-        // Gọi API; dựa trên controller, 'false' để lấy tất cả template
-        const response = await getAllTemplates(false)
+        const response = await getAllTemplates(true)
         setTemplates(response.data)
         setError(null)
       } catch (err) {
@@ -28,9 +27,7 @@ const TemplateLibraryPage = () => {
   }, [])
 
   const handleSelectTemplate = (id) => {
-    // Tương lai: Mở modal chi tiết hoặc chuyển trang
     console.log('Đã chọn template ID:', id)
-    // Ví dụ: navigate(`/template/${id}`)
   }
 
   return (
@@ -40,7 +37,7 @@ const TemplateLibraryPage = () => {
         Chọn một template để bắt đầu tạo slide của bạn
       </p>
 
-      {loading && <p>Đang tải templates...</p>}
+      {loading && <p style={{ textAlign: 'center' }}>Đang tải templates...</p>}
       {error && <p className='error-message'>{error}</p>}
 
       {!loading && !error && (
@@ -48,11 +45,24 @@ const TemplateLibraryPage = () => {
           {templates.map((template) => (
             <TemplateCard
               key={template.templateID}
-              template={template}
+              template={{
+                ...template,
+                thumbnailUrl: template.thumbnailUrl
+                  ? `${getBaseUrl()}${template.thumbnailUrl}`
+                  : '',
+              }}
               onSelect={handleSelectTemplate}
             />
           ))}
         </div>
+      )}
+
+      {!loading && !error && templates.length === 0 && (
+        <p
+          style={{ textAlign: 'center', gridColumn: '1/-1', color: '#6b7280' }}
+        >
+          Hiện chưa có template nào.
+        </p>
       )}
     </div>
   )

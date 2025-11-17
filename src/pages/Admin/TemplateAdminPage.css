@@ -1,0 +1,302 @@
+.template-admin-page {
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.filter-group,
+.search-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.table-thumb {
+  width: 80px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.no-thumb {
+  display: inline-block;
+  width: 80px;
+  height: 50px;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.tags-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon-primary,
+.btn-icon-success,
+.btn-icon-danger {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-icon-primary {
+  color: #0284c7;
+}
+.btn-icon-primary:hover {
+  background: #e0f2fe;
+}
+
+.btn-icon-success {
+  color: #16a34a;
+}
+.btn-icon-success:hover {
+  background: #dcfce7;
+}
+
+.btn-icon-danger {
+  color: #dc2626;
+}
+.btn-icon-danger:hover {
+  background: #fee2e2;
+}
+
+/* --- TAGS INPUT STYLES --- */
+.tags-input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background: white;
+}
+
+.tags-input-container:focus-within {
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+.tag-pill {
+  background: #f1f5f9;
+  color: #334155;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-pill button {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.tag-pill button:hover {
+  color: #ef4444;
+}
+
+.tags-input-container input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 120px;
+  padding: 4px;
+}
+
+.thumb-preview-box {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 200px;
+  border: 1px solid #e2e8f0;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.thumb-preview-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* --- MODAL UPLOAD SECTION LAYOUT --- */
+.upload-section {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.upload-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.upload-preview {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-preview label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.thumb-preview-box {
+  width: 100%;
+  height: 140px; /* Fixed height for consistent look */
+  border: 2px dashed #cbd5e1;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f8fafc;
+}
+
+.thumb-preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-preview {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Custom File Input Styling (Optional: làm đẹp input file) */
+.custom-file-input input[type='file'] {
+  padding: 0.4rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+/* --- SWITCH TOGGLE FOR ACTIVE STATUS --- */
+.checkbox-wrapper {
+  margin-top: auto; /* Đẩy xuống đáy cột */
+  display: flex;
+  align-items: center;
+}
+
+.switch-label {
+  position: relative;
+  display: inline-flex; /* Sử dụng inline-flex để căn chỉnh tốt hơn */
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute; /* Ẩn input đi */
+}
+
+.slider {
+  position: relative;
+  display: inline-block;
+  width: 44px; /* Tăng kích thước một chút cho dễ nhìn */
+  height: 24px;
+  background-color: #cbd5e1; /* Màu xám khi tắt */
+  border-radius: 34px;
+  transition: 0.4s;
+  margin-right: 12px;
+  flex-shrink: 0; /* Ngăn slider bị co lại */
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* Thêm bóng đổ nhẹ cho nút tròn */
+}
+
+/* Checked State */
+.switch-label input:checked + .slider {
+  background-color: #10b981; /* Màu xanh khi bật */
+}
+
+.switch-label input:focus + .slider {
+  box-shadow: 0 0 1px #10b981;
+}
+
+.switch-label input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.label-text {
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.9rem;
+}

@@ -359,3 +359,17 @@
   cursor: pointer;
   color: #6b7280;
 }
+
+.topic-row.row-inactive {
+  background-color: #f3f4f6; /* Xám nhạt */
+  color: #9ca3af;
+}
+
+.topic-row.row-inactive td {
+  color: #9ca3af;
+}
+
+.topic-row.row-inactive .fw-bold {
+  color: #6b7280;
+  text-decoration: line-through; /* Gạch ngang tên topic */
+}
