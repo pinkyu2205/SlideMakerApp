@@ -14,6 +14,10 @@ import HomePage from './pages/HomePage/HomePage'
 import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
 import SlideGeneratorPage from './pages/SlideGeneratorPage/SlideGenerator'
 import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
+
+import ForgotPassword from './pages/AuthPage/ForgotPassword/ForgotPassword'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
+
 export default function App() {
   const location = useLocation()
   const currentPage = location.pathname
@@ -32,6 +36,10 @@ export default function App() {
           <Route path='/templates' element={<TemplateLibraryPage />} />
           <Route path='/options-template' element={<OptionsTemplatePage />} />
           <Route path='/slide-generator' element={<SlideGeneratorPage />} />
+
+          {/* --- Route Quên Mật Khẩu & Profile (Mới thêm) --- */}
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/profile' element={<ProfilePage />} />
         </Routes>
 
         <Routes element={<AdminRoute />}>
