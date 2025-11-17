@@ -27,6 +27,16 @@ const AdminLayout = () => {
               Quản lý User
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to='/admin/curriculum'
+              className={({ isActive }) =>
+                isActive ? 'admin-nav-link active' : 'admin-nav-link'
+              }
+            >
+              Quản lý Chương Trình Học
+            </NavLink>
+          </li>
         </ul>
         <div className='admin-sidebar-footer'>
           <a href='/' className='admin-nav-link'>

@@ -25,7 +25,7 @@ const Login = () => {
       // Lưu token vào localStorage hoặc context
       localStorage.setItem('authToken', response.data.token)
       localStorage.setItem('user', JSON.stringify(response.data.user))
-      navigate('/dashboard') // Chuyển đến trang dashboard sau khi đăng nhập
+      navigate('/') // Chuyển đến trang dashboard sau khi đăng nhập
     } catch (err) {
       // Cập nhật xử lý lỗi để hiển thị Network Error
       let errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại.'
