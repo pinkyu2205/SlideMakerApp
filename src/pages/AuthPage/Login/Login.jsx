@@ -56,7 +56,7 @@ const Login = () => {
 
           <div className='login-form'>
             <div className='form-group'>
-              <label className='form-label'>Tên đăng nhập</label>
+              <label className='form-label'>Email</label>
               <input
                 type='text'
                 value={formData.email}
@@ -64,7 +64,7 @@ const Login = () => {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 className='form-input'
-                placeholder='Nhập tên đăng nhập'
+                placeholder='Nhập email'
               />
             </div>
 
@@ -85,7 +85,7 @@ const Login = () => {
             )}
 
             <div className='form-options'>
-              <label className='checkbox-label'>
+              {/* <label className='checkbox-label'>
                 <input
                   type='checkbox'
                   checked={formData.remember}
@@ -95,7 +95,7 @@ const Login = () => {
                   className='checkbox-input'
                 />
                 <span className='checkbox-text'>Ghi nhớ đăng nhập</span>
-              </label>
+              </label> */}
               <button className='forgot-password'>Quên mật khẩu?</button>
             </div>
 

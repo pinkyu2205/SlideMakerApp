@@ -1,51 +1,61 @@
-import { BookOpen, Menu, X } from 'lucide-react'
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import './Header.css'
+import { BookOpen, Menu, X } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./Header.css";
 
 const Header = ({ currentPage }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const navigate = useNavigate()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <header className='header'>
-      <nav className='header-container'>
-        <div className='header-content'>
-          <Link to='/' className='header-logo'>
-            <BookOpen className='logo-icon' />
-            <span className='logo-text'>MathSlides</span>
+    <header className="header">
+      <nav className="header-container">
+        <div className="header-content">
+          <Link to="/" className="header-logo">
+            <BookOpen className="logo-icon" />
+            <span className="logo-text">MathSlides</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className='nav-desktop'>
+          <div className="nav-desktop">
             <Link
-              to='/'
-              className={`nav-link ${currentPage === '/' ? 'active' : ''}`}
+              to="/"
+              className={`nav-link ${currentPage === "/" ? "active" : ""}`}
             >
               Trang chủ
             </Link>
             <Link
-              to='/options-template'
-              className={`nav-link ${currentPage === '/options-template' ? 'active' : ''}`}
+              to="/options-template"
+              className={`nav-link ${
+                currentPage === "/options-template" ? "active" : ""
+              }`}
             >
               Chọn Template
             </Link>
             <Link
-              to='/templates'
+              to="/templates"
               className={`nav-link ${
-                currentPage === '/templates' ? 'active' : ''
+                currentPage === "/templates" ? "active" : ""
               }`}
             >
               Thư viện Template
             </Link>
-            <button className='nav-link'>Về chúng tôi</button>
-            <button className='nav-link'>Hướng dẫn</button>
-            <Link to='/login' className='nav-link'>
+            <Link
+              to="/slide-generator"
+              className={`nav-link ${
+                currentPage === "/slide-generator" ? "active" : ""
+              }`}
+            >
+              Tạo Slide
+            </Link>
+            <button className="nav-link">Về chúng tôi</button>
+            <button className="nav-link">Hướng dẫn</button>
+            <Link to="/login" className="nav-link">
               Đăng nhập
             </Link>
             <button
-              onClick={() => navigate('/register')}
-              className='btn-register'
+              onClick={() => navigate("/register")}
+              className="btn-register"
             >
               Đăng ký
             </button>
@@ -53,50 +63,50 @@ const Header = ({ currentPage }) => {
 
           {/* Mobile menu button */}
           <button
-            className='menu-toggle'
+            className="menu-toggle"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
-              <X className='menu-icon' />
+              <X className="menu-icon" />
             ) : (
-              <Menu className='menu-icon' />
+              <Menu className="menu-icon" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className='nav-mobile'>
+          <div className="nav-mobile">
             <Link
-              to='/'
+              to="/"
               onClick={() => setIsMenuOpen(false)}
-              className='nav-mobile-link'
+              className="nav-mobile-link"
             >
               Trang chủ
             </Link>
             {/* THÊM LINK MỚI */}
             <Link
-              to='/templates'
+              to="/templates"
               onClick={() => setIsMenuOpen(false)}
-              className='nav-mobile-link'
+              className="nav-mobile-link"
             >
               Thư viện Template
             </Link>
-            <button className='nav-mobile-link'>Về chúng tôi</button>
-            <button className='nav-mobile-link'>Hướng dẫn</button>
+            <button className="nav-mobile-link">Về chúng tôi</button>
+            <button className="nav-mobile-link">Hướng dẫn</button>
             <Link
-              to='/login'
+              to="/login"
               onClick={() => setIsMenuOpen(false)}
-              className='nav-mobile-link'
+              className="nav-mobile-link"
             >
               Đăng nhập
             </Link>
             <button
               onClick={() => {
-                navigate('/register')
-                setIsMenuOpen(false)
+                navigate("/register");
+                setIsMenuOpen(false);
               }}
-              className='nav-mobile-link-register'
+              className="nav-mobile-link-register"
             >
               Đăng ký
             </button>
@@ -104,7 +114,7 @@ const Header = ({ currentPage }) => {
         )}
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
