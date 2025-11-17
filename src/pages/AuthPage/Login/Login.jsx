@@ -21,7 +21,7 @@ const Login = () => {
       const loginPayload = {
         email: formData.email,
         password: formData.password,
-      })
+      }
       console.log('Login successful:', response.data)
       // Lưu token vào localStorage hoặc context
       localStorage.setItem('authToken', response.data.token)
