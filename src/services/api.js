@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5258/api', // URL backend của bạn
+  baseURL: 'https://localhost:7259/api', // URL backend của bạn
   headers: {
     'Content-Type': 'application/json',
   },
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
 )
 
 export const login = (credentials) => {
-  return apiClient.post('/Auth/login', credentials)
+  return apiClient.post('/auth/login', credentials)
 }
 
 export const register = (userData) => {
@@ -34,7 +34,7 @@ export const register = (userData) => {
     password: userData.password,
     roleID: roleID,
   }
-  return apiClient.post('/Auth/register', dataToSend)
+  return apiClient.post('/auth/register', dataToSend)
 }
 
 // Hàm lấy dữ liệu cho các bộ lọc
