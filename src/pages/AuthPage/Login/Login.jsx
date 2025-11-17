@@ -17,7 +17,8 @@ const Login = () => {
     e.preventDefault()
     setError('')
     try {
-      const response = await login({
+      // Cố gắng login với email hoặc username
+      const loginPayload = {
         email: formData.email,
         password: formData.password,
       })
