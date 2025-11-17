@@ -19,16 +19,17 @@ export default function App() {
   const showFooter = currentPage === '/' && !isAdminPage
 
   return (
-    <div className='app-container'>
+    <div className="app-container">
       <Header currentPage={currentPage} />
-      <main className='main-content'>
+      <main className="main-content">
         <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/dashboard' element={<DashboardPage />} />
-          <Route path='/templates' element={<TemplateLibraryPage />} />
-          <Route path='/options-template' element={<OptionsTemplatePage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/templates" element={<TemplateLibraryPage />} />
+          <Route path="/options-template" element={<OptionsTemplatePage />} />
+          <Route path="/slide-generator" element={<SlideGeneratorPage />} />
         </Routes>
 
         <Routes element={<AdminRoute />}>
@@ -41,5 +42,5 @@ export default function App() {
       </main>
       {showFooter && <Footer />}
     </div>
-  )
+  );
 }
