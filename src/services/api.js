@@ -68,26 +68,6 @@ export const getGradesAndClasses = () => {
   return apiClient.get('/GDPT/grades-and-classes')
 }
 
-// Hàm lấy chương trình học theo lớp (từ /api/GDPT)
-export const getCurriculum = (gradeName, className) => {
-  return apiClient.get('/GDPT', {
-    params: {
-      'grade-name': gradeName,
-      'class-name': className
-    }
-  })
-}
-
-// Hàm cập nhật topic (Admin only)
-export const updateTopic = (topicId, topicData) => {
-  return apiClient.put(`/GDPT/topic/${topicId}`, topicData)
-}
-
-// Hàm deactivate topic (Admin only)
-export const deactivateTopic = (topicId) => {
-  return apiClient.put(`/GDPT/topic/${topicId}/deactivate`)
-}
-
 // Hàm lấy tất cả templates
 export const getAllTemplates = (onlyActive = true) => {
   return apiClient.get(`/Template?onlyActive=${onlyActive}`)
@@ -147,4 +127,49 @@ export const getAdminRoles = () => {
 export const updateUser = (userId, userData) => {
   return apiClient.put(`/admin/users/${userId}`, userData)
 }
+
+export const createTemplate = (templateData) => {
+  return apiClient.post('/GDPT/import', templateData)
+}
+
+// Lấy danh sách Template (Topic) theo Grade và Class
+// Dùng endpoint existing: /api/GDPT/curriculum
+export const getCurriculum = (gradeName, className, isActive) => {
+  const params = {
+    'grade-name': gradeName,
+    'class-name': className,
+  }
+  if (isActive !== '' && isActive !== null) {
+    params['is-active'] = isActive
+  }
+
+  return apiClient.get('/GDPT', { params })
+}
+
+export const deleteTopic = (topicId) => {
+  return apiClient.delete(`/GDPT/topics/${topicId}`)
+}
+
+// Lấy thông tin hồ sơ người dùng hiện tại
+export const getUserProfile = () => {
+  return apiClient.get('/auth/profile')
+}
+
+// Cập nhật hồ sơ người dùng
+export const updateUserProfile = (userId, userData) => {
+  // userData gồm: username, email, newPassword (nếu có)
+  return apiClient.put(`/auth/users/${userId}`, userData)
+}
+
+// Quên mật khẩu (Gửi yêu cầu reset)
+export const forgotPassword = (email) => {
+  return apiClient.post('/auth/forgot-password', { email })
+}
+
+// Đặt lại mật khẩu (Dùng token)
+export const resetPassword = (data) => {
+  // data gồm: email, token, newPassword
+  return apiClient.post('/auth/reset-password', data)
+}
+
 export default apiClient
