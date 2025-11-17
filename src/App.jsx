@@ -1,18 +1,22 @@
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
+import AdminRoute from './components/Auth/AdminRoute'
 import Footer from './components/Layout/Footer/Footer'
 import Header from './components/Layout/Header/Header'
+import AdminDashboardPage from './pages/Admin/AdminDashboardPage'
+import AdminLayout from './pages/Admin/AdminLayout'
+import UserManagementPage from './pages/Admin/UserManagementPage'
 import Login from './pages/AuthPage/Login/Login'
 import Register from './pages/AuthPage/Register/Register'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
 import HomePage from './pages/HomePage/HomePage'
-import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
 import OptionsTemplatePage from './pages/OptionsTemplatePage/OptionsTemplatePage'
-
+import TemplateLibraryPage from './pages/TemplateLibraryPage/TemplateLibraryPage'
 export default function App() {
   const location = useLocation()
   const currentPage = location.pathname
-  const showFooter = currentPage === '/'
+  const isAdminPage = currentPage.startsWith('/admin')
+  const showFooter = currentPage === '/' && !isAdminPage
 
   return (
     <div className='app-container'>
@@ -25,6 +29,14 @@ export default function App() {
           <Route path='/dashboard' element={<DashboardPage />} />
           <Route path='/templates' element={<TemplateLibraryPage />} />
           <Route path='/options-template' element={<OptionsTemplatePage />} />
+        </Routes>
+
+        <Routes element={<AdminRoute />}>
+          <Route path='/admin' element={<AdminLayout />}>
+            <Route index element={<Navigate to='/admin/dashboard' replace />} />
+            <Route path='dashboard' element={<AdminDashboardPage />} />
+            <Route path='users' element={<UserManagementPage />} />
+          </Route>
         </Routes>
       </main>
       {showFooter && <Footer />}
