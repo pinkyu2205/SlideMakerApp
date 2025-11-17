@@ -1,10 +1,12 @@
 import axios from 'axios'
 
+// Sử dụng proxy qua Vite dev server
 const apiClient = axios.create({
-  baseURL: 'https://localhost:7259/api', // URL backend của bạn
+  baseURL: '/api', // Proxy thông qua Vite dev server
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: false,
 })
 
 // Thêm interceptor để đính kèm token vào mỗi request nếu có
@@ -14,6 +16,10 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
+    // Thêm CORS headers
+    config.headers['Access-Control-Allow-Origin'] = '*'
+    config.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    config.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return config
   },
   (error) => {
@@ -21,8 +27,27 @@ apiClient.interceptors.request.use(
   }
 )
 
+apiClient.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    console.error('API Error Details:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+      }
+    })
+    return Promise.reject(error)
+  }
+)
+
 export const login = (credentials) => {
-  return apiClient.post('/auth/login', credentials)
+  return apiClient.post('/Auth/login', credentials)
 }
 
 export const register = (userData) => {
@@ -34,7 +59,7 @@ export const register = (userData) => {
     password: userData.password,
     roleID: roleID,
   }
-  return apiClient.post('/auth/register', dataToSend)
+  return apiClient.post('/Auth/register', dataToSend)
 }
 
 // Hàm lấy dữ liệu cho các bộ lọc
@@ -45,9 +70,12 @@ export const getGradesAndClasses = () => {
 
 // Hàm lấy chương trình học theo lớp
 export const getCurriculum = (gradeName, className) => {
-  return apiClient.get(
-    `/GDPT/curriculum?gradeName=${gradeName}&className=${className}`
-  )
+  return apiClient.get('/GDPT/curriculum', {
+    params: {
+      gradeName: gradeName,
+      className: className
+    }
+  })
 }
 
 // Hàm lấy tất cả templates
@@ -59,4 +87,21 @@ export const getAllTemplates = (onlyActive = true) => {
 export const getTemplateById = (id) => {
   return apiClient.get(`/Template/${id}`)
 }
+
+// Hàm import dữ liệu chương trình (POST)
+export const importCurriculum = (data) => {
+  return apiClient.post('/GDPT/import', data)
+}
+
+// Hàm import dữ liệu từ file (POST với FormData)
+export const importCurriculumFromFile = (file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return apiClient.post('/GDPT/import-from-file', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
 export default apiClient
