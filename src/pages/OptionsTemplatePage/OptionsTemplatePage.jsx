@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { getCurriculum } from '../../services/api'
+import { useState, useEffect } from 'react'
+import { getCurriculum, updateTopic, deactivateTopic } from '../../services/api'
 import './OptionsTemplatePage.css'
 
 const OptionsTemplatePage = () => {
@@ -9,6 +9,14 @@ const OptionsTemplatePage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [expandedTopicId, setExpandedTopicId] = useState(null)
+  
+  // Admin features
+  const [editingTopicId, setEditingTopicId] = useState(null)
+  const [editingTopicData, setEditingTopicData] = useState({})
+  
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user')) || {}
+  const isAdmin = user?.roleID === 1 || user?.roleId === 1 || user?.role === 'Admin' || user?.role === 'admin'
 
   // Định nghĩa cấp học và lớp tương ứng
   const gradeOptions = {
@@ -65,8 +73,10 @@ const OptionsTemplatePage = () => {
       
       if (response.data && Array.isArray(response.data)) {
         console.log('📚 Topics loaded:', response.data)
-        setTopics(response.data)
-        if (response.data.length === 0) {
+        // Admin see all topics, regular users see only active topics
+        const filteredTopics = isAdmin ? response.data : response.data.filter(t => t.isActive !== false)
+        setTopics(filteredTopics)
+        if (filteredTopics.length === 0) {
           setError('Chưa có chương trình học cho lớp này')
         }
       } else {
@@ -107,12 +117,181 @@ const OptionsTemplatePage = () => {
     setExpandedTopicId(null)
   }
 
+  const handleEditTopic = (topic) => {
+    setEditingTopicId(topic.topicID)
+    setEditingTopicData({ ...topic })
+  }
+
+  const handleSaveEditTopic = async (topicId) => {
+    try {
+      setLoading(true)
+      console.log('💾 Saving topic:', editingTopicData)
+      await updateTopic(topicId, editingTopicData)
+      console.log('✅ Topic updated successfully')
+      
+      // Update local state
+      setTopics(topics.map(t => 
+        t.topicID === topicId ? editingTopicData : t
+      ))
+      setEditingTopicId(null)
+      setEditingTopicData({})
+    } catch (err) {
+      console.error('❌ Error updating topic:', err)
+      setError('Không thể cập nhật topic')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteTopic = async (topicId) => {
+    if (window.confirm('Bạn có chắc muốn ẩn topic này?')) {
+      try {
+        setLoading(true)
+        console.log('🗑️ Deactivating topic:', topicId)
+        await deactivateTopic(topicId)
+        console.log('✅ Topic deactivated successfully')
+        
+        // Update local state
+        setTopics(topics.map(t => 
+          t.topicID === topicId ? { ...t, isActive: false } : t
+        ))
+      } catch (err) {
+        console.error('❌ Error deleting topic:', err)
+        setError('Không thể ẩn topic')
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingTopicId(null)
+    setEditingTopicData({})
+  }
+
   const toggleTopicExpand = (topicId) => {
     if (expandedTopicId === topicId) {
       setExpandedTopicId(null)
     } else {
       setExpandedTopicId(topicId)
     }
+  }
+
+  // Render topics list
+  const renderTopicsList = (topicsList) => {
+    return (
+      <div className='topics-list'>
+        {topicsList.map((topic) => (
+          <div key={topic.topicID} className={`topic-card ${!topic.isActive ? 'inactive' : ''}`}>
+            {/* Admin Edit Mode */}
+            {editingTopicId === topic.topicID && isAdmin ? (
+              <div className='topic-edit-form'>
+                <input
+                  type='text'
+                  value={editingTopicData.topicName || ''}
+                  onChange={(e) => setEditingTopicData({ ...editingTopicData, topicName: e.target.value })}
+                  placeholder='Tên chủ đề'
+                  className='form-input'
+                />
+                <input
+                  type='text'
+                  value={editingTopicData.strandName || ''}
+                  onChange={(e) => setEditingTopicData({ ...editingTopicData, strandName: e.target.value })}
+                  placeholder='Lĩnh vực'
+                  className='form-input'
+                />
+                <div className='form-checkbox'>
+                  <label>
+                    <input
+                      type='checkbox'
+                      checked={editingTopicData.isActive !== false}
+                      onChange={(e) => setEditingTopicData({ ...editingTopicData, isActive: e.target.checked })}
+                    />
+                    Hoạt động (Active)
+                  </label>
+                </div>
+                <div className='form-buttons'>
+                  <button 
+                    className='btn btn-primary'
+                    onClick={() => handleSaveEditTopic(topic.topicID)}
+                  >
+                    💾 Lưu
+                  </button>
+                  <button 
+                    className='btn btn-secondary'
+                    onClick={handleCancelEdit}
+                  >
+                    ❌ Huỷ
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Topic Header - Click to expand */}
+                <div 
+                  className={`topic-card-header ${expandedTopicId === topic.topicID ? 'expanded' : ''}`}
+                  onClick={() => toggleTopicExpand(topic.topicID)}
+                >
+                  <div className='topic-header-content'>
+                    <h3 className='topic-name'>
+                      {topic.topicName}
+                      {!topic.isActive && <span className='badge-inactive'>[Ẩn]</span>}
+                    </h3>
+                    <p className='topic-strand'>{topic.strandName}</p>
+                  </div>
+                  <div className='topic-expand-icon'>
+                    {expandedTopicId === topic.topicID ? '▼' : '▶'}
+                  </div>
+                </div>
+
+                {/* Admin Action Buttons */}
+                {isAdmin && (
+                  <div className='topic-admin-actions'>
+                    <button 
+                      className='btn-admin btn-edit'
+                      onClick={() => handleEditTopic(topic)}
+                      title='Chỉnh sửa topic'
+                    >
+                      ✏️ Sửa
+                    </button>
+                    <button 
+                      className='btn-admin btn-delete'
+                      onClick={() => handleDeleteTopic(topic.topicID)}
+                      title='Ẩn topic'
+                    >
+                      🗑️ Ẩn
+                    </button>
+                  </div>
+                )}
+
+                {/* Contents - Show when expanded */}
+                {expandedTopicId === topic.topicID && (
+                  <div className='topic-contents'>
+                    {topic.contents && topic.contents.length > 0 ? (
+                      <div className='contents-list'>
+                        {topic.contents.map((content) => (
+                          <div key={content.contentID} className='content-item'>
+                            <div className='content-info'>
+                              <h4 className='content-title'>{content.title}</h4>
+                              <p className='content-summary'>{content.summary}</p>
+                            </div>
+                            <button className='create-slide-btn'>
+                              ✏️ Tạo Slide
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className='no-contents'>Chủ đề này không có nội dung</p>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    )
   }
 
   return (
@@ -179,50 +358,7 @@ const OptionsTemplatePage = () => {
               <div className='error-message'>⚠️ {error}</div>
             )}
 
-            {!loading && !error && topics.length > 0 && (
-              <div className='topics-list'>
-                {topics.map((topic) => (
-                  <div key={topic.topicID} className='topic-card'>
-                    {/* Topic Header - Click to expand */}
-                    <div 
-                      className={`topic-card-header ${expandedTopicId === topic.topicID ? 'expanded' : ''}`}
-                      onClick={() => toggleTopicExpand(topic.topicID)}
-                    >
-                      <div className='topic-header-content'>
-                        <h3 className='topic-name'>{topic.topicName}</h3>
-                        <p className='topic-strand'>{topic.strandName}</p>
-                      </div>
-                      <div className='topic-expand-icon'>
-                        {expandedTopicId === topic.topicID ? '▼' : '▶'}
-                      </div>
-                    </div>
-
-                    {/* Contents - Show when expanded */}
-                    {expandedTopicId === topic.topicID && (
-                      <div className='topic-contents'>
-                        {topic.contents && topic.contents.length > 0 ? (
-                          <div className='contents-list'>
-                            {topic.contents.map((content) => (
-                              <div key={content.contentID} className='content-item'>
-                                <div className='content-info'>
-                                  <h4 className='content-title'>{content.title}</h4>
-                                  <p className='content-summary'>{content.summary}</p>
-                                </div>
-                                <button className='create-slide-btn'>
-                                  ✏️ Tạo Slide
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className='no-contents'>Chủ đề này không có nội dung</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            {!loading && !error && topics.length > 0 && renderTopicsList(topics)}
 
             {!loading && !error && topics.length === 0 && (
               <div className='no-topics'>
