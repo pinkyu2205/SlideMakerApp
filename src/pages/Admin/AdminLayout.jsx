@@ -37,6 +37,16 @@ const AdminLayout = () => {
               Quản lý Chương Trình Học
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to='/admin/templates-ppt'
+              className={({ isActive }) =>
+                isActive ? 'admin-nav-link active' : 'admin-nav-link'
+              }
+            >
+              Quản lý Template PPT
+            </NavLink>
+          </li>
         </ul>
         <div className='admin-sidebar-footer'>
           <a href='/' className='admin-nav-link'>
