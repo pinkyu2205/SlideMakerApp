@@ -104,4 +104,37 @@ export const importCurriculumFromFile = (file) => {
   })
 }
 
+// ================= ADMIN APIs =================
+
+export const getAdminStats = () => {
+  const mockStats = {
+    totalUsers: 150,
+    totalTeachers: 45,
+    totalStudents: 105,
+    totalTemplates: 12,
+    totalSlides: 320,
+    logins24h: 35,
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ data: mockStats })
+    }, 500)
+  })
+}
+
+export const getAllUsers = () => {
+  return apiClient.get('/admin/users')
+}
+
+export const deleteUser = (userId) => {
+  return apiClient.delete(`/admin/users/${userId}`)
+}
+
+export const getAdminRoles = () => {
+  return apiClient.get('/admin/roles')
+}
+
+export const updateUser = (userId, userData) => {
+  return apiClient.put(`/admin/users/${userId}`, userData)
+}
 export default apiClient
