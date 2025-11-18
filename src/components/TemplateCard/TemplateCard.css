@@ -19,6 +19,7 @@
   padding-top: 60%; /* Tỷ lệ 5:3 */
   position: relative;
   background-color: #f3f4f6;
+  pointer-events: none;
 }
 
 .template-card-thumbnail img {
